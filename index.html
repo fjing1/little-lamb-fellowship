@@ -39,38 +39,6 @@
         <p id="extra-info">Stay tuned for more updates!</p>
     </div>
 
-    <!-- Load the EmailJS SDK -->
-    <script type="module">
-        import emailjs from 'https://cdn.emailjs.com/dist/email.min.js';
-
-        document.addEventListener("DOMContentLoaded", function () {
-            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual EmailJS Public Key
-
-            document.getElementById("userForm").addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent page reload
-
-                // Get user input values
-                const userData = {
-                    name: document.getElementById("name").value,
-                    attribute: document.getElementById("attribute").value,
-                    wechat: document.getElementById("wechat").value,
-                    email: document.getElementById("email").value,
-                };
-
-                // Send email using EmailJS
-                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", userData)
-                    .then(response => {
-                        alert("✅ Email sent successfully!");
-                        console.log("SUCCESS", response);
-                        document.getElementById("userForm").reset(); // Clear the form
-                    })
-                    .catch(error => {
-                        alert("❌ Failed to send email!");
-                        console.error("ERROR", error);
-                    });
-            });
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
