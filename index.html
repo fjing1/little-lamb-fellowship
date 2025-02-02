@@ -8,19 +8,69 @@
 </head>
 <body>
     <div class="container">
+        <h1>Welcome to the Austin Chinese Church Young Professional Fellowship</h1>
+        <p>Location: 11118 Dessau Rd, Austin, TX 78754</p>
+        <p>Meeting Time: 7pm Every Friday</p>
+        <p>Contact Person: name, + number</p>
+
         <img src="united_heart_group_2025_jan.jpg" alt="united heart/合心" class="main-image">
+        
         <form id="userForm">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
+
             <label for="attribute">Attribute:</label>
             <input type="text" id="attribute" name="attribute" required>
+
+            <label for="wechat">WeChat ID:</label>
+            <input type="text" id="wechat" name="wechat" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+
             <button type="submit">Submit</button>
         </form>
+
         <div class="user-list">
             <h2>Saved Users:</h2>
             <ul id="userItems"></ul>
         </div>
+
+        <p id="extra-info">Stay tuned for more updates!</p>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Load the EmailJS SDK -->
+    <script type="module">
+        import emailjs from 'https://cdn.emailjs.com/dist/email.min.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual EmailJS Public Key
+
+            document.getElementById("userForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent page reload
+
+                // Get user input values
+                const userData = {
+                    name: document.getElementById("name").value,
+                    attribute: document.getElementById("attribute").value,
+                    wechat: document.getElementById("wechat").value,
+                    email: document.getElementById("email").value,
+                };
+
+                // Send email using EmailJS
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", userData)
+                    .then(response => {
+                        alert("✅ Email sent successfully!");
+                        console.log("SUCCESS", response);
+                        document.getElementById("userForm").reset(); // Clear the form
+                    })
+                    .catch(error => {
+                        alert("❌ Failed to send email!");
+                        console.error("ERROR", error);
+                    });
+            });
+        });
+    </script>
+
 </body>
 </html>

@@ -1,47 +1,33 @@
-const form = document.getElementById('userForm');
-const userList = document.getElementById('userItems');
-const maxUsers = 100;
-let users = JSON.parse(localStorage.getItem('users')) || [];
+import emailjs from "@emailjs/browser";
 
-function saveUsersToFile() {
-    const blob = new Blob([JSON.stringify(users, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'users.json';
-    a.click();
-}
+emailjs.init("YOUR_PUBLIC_KEY");
 
-function renderUsers() {
-    userList.innerHTML = '';
-    users.forEach((user, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${user.name} - ${user.attribute}`;
-        userList.appendChild(li);
+// Your form submission logic...
+
+document.addEventListener("DOMContentLoaded", function () {
+    emailjs.init("pGZi-HeC-kpDSqhqP"); // Initialize EmailJS
+
+    document.getElementById("userForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent page reload
+
+        // Get user input values
+        const userData = {
+            name: document.getElementById("name").value,
+            attribute: document.getElementById("attribute").value,
+            wechat: document.getElementById("wechat").value,
+            email: document.getElementById("email").value,
+        };
+
+        // Send email using EmailJS
+        emailjs.send("service_kzpoo7r", "template_lxlwrcw", userData)
+            .then(function (response) {
+                alert("✅ Email sent successfully!");
+                console.log("SUCCESS", response);
+                document.getElementById("userForm").reset(); // Clear the form
+            })
+            .catch(function (error) {
+                alert("❌ Failed to send email!");
+                console.error("ERROR", error);
+            });
     });
-}
-
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    if (users.length >= maxUsers) {
-        alert('Maximum number of users reached!');
-        return;
-    }
-
-    const name = form.name.value.trim();
-    const attribute = form.attribute.value.trim();
-
-    if (!name || !attribute) {
-        alert('Please fill out all fields.');
-        return;
-    }
-
-    users.push({ name, attribute });
-    localStorage.setItem('users', JSON.stringify(users));
-
-    renderUsers();
-    form.reset();
-    saveUsersToFile();
 });
-
-renderUsers();
