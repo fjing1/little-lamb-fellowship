@@ -8,6 +8,44 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/favicon.png">
 </head>
+<!-- Sign-up Modal -->
+<dialog id="signupModal" class="modal">
+  <article class="card">
+    <header class="modal-header">
+      <h3>Sign up</h3>
+      <button class="btn ghost" id="signupClose" aria-label="Close">✕</button>
+    </header>
+
+    <!-- Replace action with your Formspree endpoint -->
+    <form id="signupForm" action="https://formspree.io/f/ABCD1234" method="POST" novalidate>
+      <!-- These get filled by JS when you click a “Sign up” button -->
+      <input type="hidden" name="event_title" id="su_event_title">
+      <input type="hidden" name="event_date" id="su_event_date">
+      <input type="hidden" name="_subject" value="LLF Event Sign-up">
+
+      <label>Nickname or Initials (please don’t use your real name)
+        <input type="text" name="nickname" placeholder="e.g., J.K. or Sunflower" required>
+      </label>
+
+      <label>Email (optional, for follow-up)
+        <input type="email" name="email" placeholder="you@example.com">
+      </label>
+
+      <label>Notes (optional)
+        <textarea name="notes" rows="4" placeholder="Any questions, dietary needs, ride, etc."></textarea>
+      </label>
+
+      <!-- Honeypot -->
+      <div style="position:absolute; left:-9999px" aria-hidden="true">
+        <label>Leave empty <input type="text" name="_hp"></label>
+      </div>
+
+      <button class="btn" type="submit">Send</button>
+      <p id="signupStatus" class="muted small" role="status" aria-live="polite"></p>
+    </form>
+  </article>
+</dialog>
+
 <body>
   <header class="site-header">
     <div class="container">
