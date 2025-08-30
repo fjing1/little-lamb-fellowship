@@ -30,6 +30,15 @@ label { display:block; margin:.5rem 0; }
 /* Hero */
 .hero-grid { display:grid; grid-template-columns: 1.3fr .7fr; gap:1rem; align-items:center; }
 .hero-img { width:100%; height:auto; border-radius:1rem; }
+/* Small-group-img */
+.small-group-img {
+  max-width: 400px;   /* or whatever size you want */
+  width: 100%;        /* scales down on mobile */
+  height: auto;
+  border-radius: 1rem;
+  display: block;
+  margin: 0 auto;     /* center horizontally */
+}
 
 /* Misc */
 .notice { margin-top:.75rem; padding:.6rem .8rem; border-left: 4px solid var(--brand); background: color-mix(in oklab, var(--brand) 12%, var(--card)); border-radius:.5rem; }
