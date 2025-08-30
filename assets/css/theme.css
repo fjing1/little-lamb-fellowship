@@ -1,0 +1,186 @@
+/* ============================
+   theme.css (LLF — Light + Dark)
+   ============================ */
+
+/* 1) Base (light mode) */
+:root {
+  color-scheme: light;
+
+  /* LIGHT THEME COLORS */
+  --brand:       #2563eb;
+  --brand-ink:   #1e40af;
+  --bg:          #ffffff;
+  --surface:     #f8fafc;
+  --text:        #0f172a;
+  --muted:       #475569;
+  --border:      #e5e7eb;
+
+  --radius:      16px;
+  --shadow-sm:   0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:   0 6px 20px rgba(0,0,0,.08);
+  --shadow-glow: 0 0 18px rgba(37,99,235,.25);
+
+  --focus-ring:  2px solid var(--brand);
+}
+
+/* 2) Dark mode with custom palette */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:          #060107; /* ⚫ Dark Black */
+  --surface:     #210d3b; /* Deep Purple */
+
+  /* Text palette */
+  --text-main:   #ffffff;
+  --text-strong: #d081d7; /* 🌸 Neon Pink / Magenta */
+  --text-link:   #237ad7; /* 🔵 Electric Blue */
+  --text-accent: #78277d; /* 💜 Violet / Purple */
+  --text-muted:  #d86e72; /* 🔥 Orange-Pink Glow */
+  --border:      #237ad7;
+
+  --shadow-sm:   0 1px 2px rgba(0,0,0,.35);
+  --shadow-md:   0 10px 30px rgba(0,0,0,.45);
+  --shadow-glow: 0 0 18px rgba(208,129,215,.35);
+}
+
+/* Optional: respect OS preference if no data-theme is set */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) { color-scheme: dark; }
+  html:not([data-theme]) body { background: #060107; color: #ffffff; }
+}
+
+/* 3) Global */
+html, body {
+  background: var(--bg) !important;
+  color: var(--text-main, var(--text)) !important;
+}
+
+a {
+  color: var(--text-link, var(--brand)) !important;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--text-strong, var(--brand-ink)) !important;
+  text-shadow: 0 0 8px var(--text-link, transparent);
+}
+
+/* 4) Headings */
+h1, h2, h3, h4 {
+  color: var(--text-strong, var(--text)) !important;
+}
+
+/* 5) Surfaces */
+.site-header,
+header,
+nav,
+.site-footer,
+.card,
+section,
+.modal article {
+  background: var(--surface) !important;
+  color: var(--text-main, var(--text)) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header { border-bottom-width: 1px !important; }
+.site-footer { border-top-width: 1px !important; }
+
+/* 6) Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .65rem 1rem;
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--text-strong, var(--brand)) !important;
+  color: #fff !important;
+  border: 1px solid transparent !important;
+  box-shadow: var(--shadow-glow);
+  transition: all .2s ease;
+  cursor: pointer;
+}
+.btn:hover { background: var(--text-accent, var(--brand-ink)) !important; }
+
+.btn.ghost {
+  background: transparent !important;
+  color: var(--text-link, var(--brand)) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none;
+}
+.btn.ghost:hover {
+  background: rgba(255,255,255,.06) !important;
+}
+
+/* 7) Nav links */
+nav a {
+  display: inline-block;
+  padding: .5rem .75rem;
+  border-radius: 10px;
+  color: var(--text-muted, var(--muted)) !important;
+}
+nav a:hover,
+nav a[aria-current="page"] {
+  color: var(--text-link, var(--brand)) !important;
+  background: rgba(255,255,255,.06);
+}
+
+/* 8) Forms */
+label {
+  color: var(--text-accent, var(--text)) !important;
+}
+input, textarea, select {
+  width: 100%;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .6rem .7rem;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--text-link, var(--brand));
+  box-shadow: 0 0 0 3px rgba(37,99,235,.25);
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background: #0d0d12 !important;
+  color: var(--text-main) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus {
+  border-color: var(--text-strong) !important;
+  box-shadow: 0 0 12px rgba(208,129,215,.45) !important;
+}
+
+/* 9) Muted text / footer */
+.muted,
+small,
+footer {
+  color: var(--text-muted, var(--muted)) !important;
+}
+
+/* 10) Utility classes */
+.notice {
+  border: 1px dashed var(--border) !important;
+  padding: .75rem 1rem;
+  border-radius: 12px;
+}
+.responsive { max-width: 100%; height: auto; }
+.small { font-size: .9rem; }
+.two-col { columns: 2; column-gap: 1.25rem; }
+@media (max-width: 720px) { .two-col { columns: 1; } }
+
+.small-group-img {
+  max-width: 420px; width: 100%; height: auto;
+  border-radius: 1rem; display: block; margin: 0 auto;
+}
+
+/* 11) Focus states */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
