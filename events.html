@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Little Lamb Fellowship — Youth</title>
-  <meta name="description" content="A welcoming Christian youth community — friends, service, and growth." />
+  <title>LLF — Past & Future Events</title>
+  <meta name="description" content="LLF events and announcements" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/favicon.png">
 </head>
@@ -13,7 +13,7 @@
     <div class="container">
       <a class="brand" href="index.html">LLF of ACC</a>
       <nav aria-label="Primary">
-        <a href="events.html">Events</a>
+        <a href="events.html" class="active">Past and Future Events</a>
         <a href="songs.html">Songs</a>
         <a href="contact.html">Prayer</a>
         <a href="photos.html">Photos</a>
@@ -28,9 +28,11 @@
   <main class="container">
     <section class="card">
       <h1>Announcements & Events</h1>
-      <p class="muted">Event planner update this list in <code>data/events.json</code>.</p>
+      <p class="muted">Leaders update <code>data/events.json</code>. Click “Sign up” to email us.</p>
+
       <h2>Upcoming</h2>
       <ul id="eventList" class="list"></ul>
+
       <h2>Past</h2>
       <ul id="pastEventList" class="list"></ul>
     </section>
@@ -38,7 +40,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <small>© <span id="year"></span> Little Lamb Fellowship of ACC · You're loved & welcome here.</small>
+      <small>© <span id="year"></span> Little Lamb Fellowship</small>
       <div id="verseBox" class="verse" aria-live="polite"></div>
     </div>
   </footer>
@@ -54,44 +56,118 @@
       <p class="small muted">Point your camera at the code to open this site.</p>
     </article>
   </dialog>
-<!-- Sign-up Modal -->
-<dialog id="signupModal" class="modal">
-  <article class="card">
-    <header class="modal-header">
-      <h3>Sign up</h3>
-      <button class="btn ghost" id="signupClose" aria-label="Close">✕</button>
-    </header>
 
-    <!-- Replace action with your Formspree endpoint -->
-    <form id="signupForm" action="https://formspree.io/f/ABCD1234" method="POST" novalidate>
-      <!-- These get filled by JS when you click a “Sign up” button -->
-      <input type="hidden" name="event_title" id="su_event_title">
-      <input type="hidden" name="event_date" id="su_event_date">
-      <input type="hidden" name="_subject" value="LLF Event Sign-up">
+  <!-- Sign-up Modal (same as index) -->
+  <dialog id="signupModal" class="modal">
+    <article class="card">
+      <header class="modal-header">
+        <h3>Sign up</h3>
+        <button class="btn ghost" id="signupClose" aria-label="Close">✕</button>
+      </header>
+      <!-- Replace action with your Formspree endpoint -->
+      <form id="signupForm" action="https://formspree.io/f/ABCD1234" method="POST" novalidate>
+        <input type="hidden" name="event_title" id="su_event_title">
+        <input type="hidden" name="event_date" id="su_event_date">
+        <input type="hidden" name="_subject" value="LLF Event Sign-up">
 
-      <label>Nickname or Initials (please don’t use your real name)
-        <input type="text" name="nickname" placeholder="e.g., J.K. or Sunflower" required>
-      </label>
+        <label>Nickname or Initials (please don’t use your real name)
+          <input type="text" name="nickname" placeholder="e.g., J.K. or Sunflower" required>
+        </label>
 
-      <label>Email (optional, for follow-up)
-        <input type="email" name="email" placeholder="you@example.com">
-      </label>
+        <label>Email (optional, for follow-up)
+          <input type="email" name="email" placeholder="you@example.com">
+        </label>
 
-      <label>Notes (optional)
-        <textarea name="notes" rows="4" placeholder="Any questions, dietary needs, ride, etc."></textarea>
-      </label>
+        <label>Notes (optional)
+          <textarea name="notes" rows="4" placeholder="Any questions, ride, dietary needs, etc."></textarea>
+        </label>
 
-      <!-- Honeypot -->
-      <div style="position:absolute; left:-9999px" aria-hidden="true">
-        <label>Leave empty <input type="text" name="_hp"></label>
-      </div>
+        <!-- Honeypot -->
+        <div style="position:absolute; left:-9999px" aria-hidden="true">
+          <label>Leave empty <input type="text" name="_hp"></label>
+        </div>
 
-      <button class="btn" type="submit">Send</button>
-      <p id="signupStatus" class="muted small" role="status" aria-live="polite"></p>
-    </form>
-  </article>
-</dialog>
+        <button class="btn" type="submit">Send</button>
+        <p id="signupStatus" class="muted small" role="status" aria-live="polite"></p>
+      </form>
+    </article>
+  </dialog>
 
   <script src="assets/js/script.js" defer></script>
+
+  <!-- Inline scripts: render events + open signup + submit via fetch -->
+  <script>
+  // helper to open the modal; also used by index.html
+  window.openSignup = function(title, isoDate) {
+    const modal = document.getElementById('signupModal');
+    const t = document.getElementById('su_event_title');
+    const d = document.getElementById('su_event_date');
+    const statusEl = document.getElementById('signupStatus');
+    if (t) t.value = title || '';
+    if (d) d.value = isoDate ? new Date(isoDate).toLocaleString() : '';
+    if (statusEl) statusEl.textContent = '';
+    modal && modal.showModal();
+  };
+
+  // load & render events.json with Sign up buttons
+  (async function () {
+    const list = document.getElementById('eventList');
+    const pastList = document.getElementById('pastEventList');
+
+    try {
+      const res = await fetch('data/events.json', { cache: 'no-store' });
+      const items = await res.json();
+      const now = new Date();
+
+      const upcoming = items.filter(e => new Date(e.date) >= now).sort((a,b)=> new Date(a.date)-new Date(b.date));
+      const past = items.filter(e => new Date(e.date) < now).sort((a,b)=> new Date(a.date)-new Date(b.date));
+
+      const render = (e) => {
+        const when = new Date(e.date).toLocaleString([], {weekday:'long', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+        const meta = `${when} · ${e.location || ''}`.replace(/\s·\s$/, '');
+        return `<li class="card">
+          <h3>${e.title}</h3>
+          <p class="muted">${meta}</p>
+          <p>${e.excerpt || ''}</p>
+          <button class="btn" data-signup-title="${e.title.replace(/"/g,'&quot;')}" data-signup-date="${e.date}">Sign up</button>
+          ${e.signup_url ? ` <a class="btn ghost" href="${e.signup_url}" target="_blank" rel="noopener">More info</a>` : ''}
+        </li>`;
+      };
+
+      list.innerHTML = upcoming.map(render).join('') || '<li class="muted">No upcoming events</li>';
+      pastList.innerHTML = past.reverse().map(render).join('');
+
+      // delegate clicks for dynamic buttons
+      document.addEventListener('click', (ev) => {
+        const btn = ev.target.closest('button[data-signup-title]');
+        if (!btn) return;
+        window.openSignup?.(btn.getAttribute('data-signup-title'), btn.getAttribute('data-signup-date'));
+      });
+    } catch (e) {
+      list.innerHTML = '<li class="muted">Could not load events.</li>';
+    }
+  })();
+
+  // signup modal submit via fetch to Formspree (nice UX)
+  (function () {
+    const modal = document.getElementById('signupModal');
+    const closeBtn = document.getElementById('signupClose');
+    const form = document.getElementById('signupForm');
+    const statusEl = document.getElementById('signupStatus');
+
+    closeBtn && closeBtn.addEventListener('click', () => modal && modal.close());
+
+    form && form.addEventListener('submit', async (e) => {
+      if (form.querySelector('[name="_hp"]').value) { e.preventDefault(); statusEl.textContent = 'Thanks!'; return; }
+      e.preventDefault();
+      statusEl.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }});
+        if (res.ok) { statusEl.textContent = 'Got it! We’ll be in touch.'; form.reset(); setTimeout(()=>modal && modal.close(), 900); }
+        else { statusEl.textContent = 'Something went wrong. Please try again.'; }
+      } catch { statusEl.textContent = 'Network error. Please try again.'; }
+    });
+  })();
+  </script>
 </body>
 </html>

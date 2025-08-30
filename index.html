@@ -7,45 +7,11 @@
   <meta name="description" content="A welcoming Christian youth community — friends, service, and growth." />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/images/favicon.png">
+  <style>
+    /* ensure the small group image doesn’t fill the whole hero */
+    .small-group-img { max-width: 420px; width: 100%; height: auto; border-radius: 1rem; display: block; margin: 0 auto; }
+  </style>
 </head>
-<!-- Sign-up Modal -->
-<dialog id="signupModal" class="modal">
-  <article class="card">
-    <header class="modal-header">
-      <h3>Sign up</h3>
-      <button class="btn ghost" id="signupClose" aria-label="Close">✕</button>
-    </header>
-
-    <!-- Replace action with your Formspree endpoint -->
-    <form id="signupForm" action="https://formspree.io/f/ABCD1234" method="POST" novalidate>
-      <!-- These get filled by JS when you click a “Sign up” button -->
-      <input type="hidden" name="event_title" id="su_event_title">
-      <input type="hidden" name="event_date" id="su_event_date">
-      <input type="hidden" name="_subject" value="LLF Event Sign-up">
-
-      <label>Nickname or Initials (please don’t use your real name)
-        <input type="text" name="nickname" placeholder="e.g., J.K. or Sunflower" required>
-      </label>
-
-      <label>Email (optional, for follow-up)
-        <input type="email" name="email" placeholder="you@example.com">
-      </label>
-
-      <label>Notes (optional)
-        <textarea name="notes" rows="4" placeholder="Any questions, dietary needs, ride, etc."></textarea>
-      </label>
-
-      <!-- Honeypot -->
-      <div style="position:absolute; left:-9999px" aria-hidden="true">
-        <label>Leave empty <input type="text" name="_hp"></label>
-      </div>
-
-      <button class="btn" type="submit">Send</button>
-      <p id="signupStatus" class="muted small" role="status" aria-live="polite"></p>
-    </form>
-  </article>
-</dialog>
-
 <body>
   <header class="site-header">
     <div class="container">
@@ -72,6 +38,8 @@
           <div class="actions">
             <a class="btn" href="events.html">See Upcoming Events</a>
             <a class="btn ghost" href="contact.html">Ask for Prayer</a>
+            <!-- Global sign-up trigger -->
+            <a class="btn" href="#" onclick="openSignup('General Interest', new Date().toISOString()); return false;">Sign up</a>
           </div>
         </div>
         <img class="small-group-img" src="assets/images/llf_small_groups.png" alt="Small groups at LLF" />
@@ -104,6 +72,77 @@
     </article>
   </dialog>
 
+  <!-- Sign-up Modal (Formspree email) -->
+  <dialog id="signupModal" class="modal">
+    <article class="card">
+      <header class="modal-header">
+        <h3>Sign up</h3>
+        <button class="btn ghost" id="signupClose" aria-label="Close">✕</button>
+      </header>
+      <!-- Replace action with your Formspree endpoint -->
+      <form id="signupForm" action="https://formspree.io/f/mandojop" method="POST" novalidate>
+        <input type="hidden" name="event_title" id="su_event_title">
+        <input type="hidden" name="event_date" id="su_event_date">
+        <input type="hidden" name="_subject" value="LLF Event Sign-up">
+
+        <label>Nickname or Initials (please don’t use your real name)
+          <input type="text" name="nickname" placeholder="e.g., J.K. or Sunflower" required>
+        </label>
+
+        <label>Email (optional, for follow-up)
+          <input type="email" name="email" placeholder="you@example.com">
+        </label>
+
+        <label>Notes (optional)
+          <textarea name="notes" rows="4" placeholder="Any questions, ride, dietary needs, etc."></textarea>
+        </label>
+
+        <!-- Honeypot -->
+        <div style="position:absolute; left:-9999px" aria-hidden="true">
+          <label>Leave empty <input type="text" name="_hp"></label>
+        </div>
+
+        <button class="btn" type="submit">Send</button>
+        <p id="signupStatus" class="muted small" role="status" aria-live="polite"></p>
+      </form>
+    </article>
+  </dialog>
+
   <script src="assets/js/script.js" defer></script>
+
+  <!-- Inline helper: open/close signup + submit via fetch -->
+  <script>
+  // Expose a global opener for buttons/links
+  window.openSignup = function(title, isoDate) {
+    const modal = document.getElementById('signupModal');
+    const t = document.getElementById('su_event_title');
+    const d = document.getElementById('su_event_date');
+    const statusEl = document.getElementById('signupStatus');
+    if (t) t.value = title || 'General Interest';
+    if (d) d.value = isoDate ? new Date(isoDate).toLocaleString() : new Date().toLocaleString();
+    if (statusEl) statusEl.textContent = '';
+    modal && modal.showModal();
+  };
+
+  (function () {
+    const modal = document.getElementById('signupModal');
+    const closeBtn = document.getElementById('signupClose');
+    const form = document.getElementById('signupForm');
+    const statusEl = document.getElementById('signupStatus');
+
+    closeBtn && closeBtn.addEventListener('click', () => modal && modal.close());
+
+    form && form.addEventListener('submit', async (e) => {
+      if (form.querySelector('[name="_hp"]').value) { e.preventDefault(); statusEl.textContent = 'Thanks!'; return; }
+      e.preventDefault();
+      statusEl.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }});
+        if (res.ok) { statusEl.textContent = 'Got it! We’ll be in touch.'; form.reset(); setTimeout(()=>modal && modal.close(), 900); }
+        else { statusEl.textContent = 'Something went wrong. Please try again.'; }
+      } catch { statusEl.textContent = 'Network error. Please try again.'; }
+    });
+  })();
+  </script>
 </body>
 </html>
