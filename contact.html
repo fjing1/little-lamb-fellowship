@@ -25,25 +25,23 @@
     </div>
   </header>
 
-  <main class="container" id="home">
-    <section class="hero card">
-      <div class="hero-grid">
-        <div>
-          <h1>Welcome 👋</h1>
-          <p>We’re a youth fellowship following Jesus together—making friends, serving our city, and growing in faith.</p>
-          <div class="actions">
-            <a class="btn" href="events.html">See Upcoming Events</a>
-            <a class="btn ghost" href="contact.html">Ask for Prayer</a>
-          </div>
-        </div>
-        <img class="hero-img" src="assets/images/hero.jpg" alt="Youth group at LLF" />
-      </div>
-      <div id="nextEvent" class="notice"></div>
-    </section>
-
+  <main class="container">
     <section class="card">
-      <h2>What’s new</h2>
-      <ul id="homeUpdates" class="list two-col"></ul>
+      <h1>Prayer Request</h1>
+      <form action="https://formspree.io/f/your-id" method="POST" id="prayForm">
+        <label>Name (optional)
+          <input type="text" name="name" />
+        </label>
+        <label>How can we pray for you?
+          <textarea name="request" rows="5" required></textarea>
+        </label>
+        <label>Email for follow‑up (optional)
+          <input type="email" name="email" />
+        </label>
+        <button class="btn" type="submit">Send</button>
+        <p id="prayStatus" class="muted small" role="status" aria-live="polite"></p>
+      </form>
+      <p class="muted small">Or email <a href="mailto:leaders@example.com">leaders@example.com</a></p>
     </section>
   </main>
 

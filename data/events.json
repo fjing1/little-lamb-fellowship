@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Back\u2011to\u2011School Bash",
+    "date": "2025-09-12T18:30:00-05:00",
+    "location": "Fellowship Hall",
+    "excerpt": "Food, games, worship\u2014kick off the new year with friends!",
+    "signup_url": "https://example.com/signup"
+  },
+  {
+    "title": "Sunday Youth Night",
+    "date": "2025-10-05T17:00:00-05:00",
+    "location": "Annex",
+    "excerpt": "Small groups + snacks + a short talk."
+  },
+  {
+    "title": "Service Project: Food Drive",
+    "date": "2025-07-20T10:00:00-05:00",
+    "location": "Community Center",
+    "excerpt": "Let\u2019s serve together and bless our neighbors."
+  }
+]

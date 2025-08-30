@@ -25,25 +25,18 @@
     </div>
   </header>
 
-  <main class="container" id="home">
-    <section class="hero card">
-      <div class="hero-grid">
-        <div>
-          <h1>Welcome 👋</h1>
-          <p>We’re a youth fellowship following Jesus together—making friends, serving our city, and growing in faith.</p>
-          <div class="actions">
-            <a class="btn" href="events.html">See Upcoming Events</a>
-            <a class="btn ghost" href="contact.html">Ask for Prayer</a>
-          </div>
-        </div>
-        <img class="hero-img" src="assets/images/hero.jpg" alt="Youth group at LLF" />
-      </div>
-      <div id="nextEvent" class="notice"></div>
-    </section>
-
+  <main class="container">
     <section class="card">
-      <h2>What’s new</h2>
-      <ul id="homeUpdates" class="list two-col"></ul>
+      <h1>Song Library</h1>
+      <div class="toolbar">
+        <input id="songSearch" type="search" placeholder="Search songs or tags…" aria-label="Search songs"/>
+        <button id="downloadAll" class="btn">Download list</button>
+      </div>
+      <ul id="songList" class="list"></ul>
+      <details class="hint"><summary>How this works</summary>
+        <p>We read <code>data/songs.txt</code> and turn it into links. Format each line:</p>
+        <pre>Title - optional tags | https://example.com/file.pdf</pre>
+      </details>
     </section>
   </main>
 

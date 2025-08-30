@@ -25,25 +25,14 @@
     </div>
   </header>
 
-  <main class="container" id="home">
-    <section class="hero card">
-      <div class="hero-grid">
-        <div>
-          <h1>Welcome 👋</h1>
-          <p>We’re a youth fellowship following Jesus together—making friends, serving our city, and growing in faith.</p>
-          <div class="actions">
-            <a class="btn" href="events.html">See Upcoming Events</a>
-            <a class="btn ghost" href="contact.html">Ask for Prayer</a>
-          </div>
-        </div>
-        <img class="hero-img" src="assets/images/hero.jpg" alt="Youth group at LLF" />
-      </div>
-      <div id="nextEvent" class="notice"></div>
-    </section>
-
+  <main class="container">
     <section class="card">
-      <h2>What’s new</h2>
-      <ul id="homeUpdates" class="list two-col"></ul>
+      <h1>Announcements & Events</h1>
+      <p class="muted">Leaders update this list in <code>data/events.json</code>.</p>
+      <h2>Upcoming</h2>
+      <ul id="eventList" class="list"></ul>
+      <h2>Past</h2>
+      <ul id="pastEventList" class="list"></ul>
     </section>
   </main>
 
