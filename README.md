@@ -21,11 +21,12 @@ A simple, GitHub Pages–friendly static site for the youth fellowship.
 ```json
 [
   {
-    "title": "Back‑to‑School Bash",
-    "date": "2025-09-12T18:30:00-05:00",
-    "location": "Fellowship Hall",
+    "title": "Event title",
+    "date": "2025-09-09T18:30:00-05:00",
+    "location": "Apple Park",
     "excerpt": "Food, games, worship—kick off the new year with friends!",
-    "signup_url": "https://example.com/signup"
+    "signup_url": "https://example.com/signup",
+    "DRI":"tim"
   }
 ]
 ```
