@@ -1,4 +1,35 @@
-Amazing Grace - hymn | https://example.com/amazing-grace.pdf
-Great Are You Lord - contemporary, worship | https://example.com/great-are-you-lord.pdf
-Way Maker - worship | https://example.com/way-maker.pdf
-10,000 Reasons - worship | https://example.com/10000-reasons.pdf
+Amazing Grace - hymn, traditional | https://www.youtube.com/watch?v=CDdvReNKKuk
+Great Are You Lord - contemporary, worship, All Sons & Daughters | https://www.youtube.com/watch?v=3GIcHbOue5M
+Way Maker - worship, contemporary, Sinach | https://www.youtube.com/watch?v=29IWWXjzOGY
+10,000 Reasons - worship, contemporary, Matt Redman | https://www.youtube.com/watch?v=DXDGE_lRI0E
+How Great Thou Art - hymn, traditional | https://www.youtube.com/watch?v=WPrMVULNbmU
+Oceans (Where Feet May Fail) - worship, contemporary, Hillsong United | https://www.youtube.com/watch?v=dy9nwe9_xzw
+Blessed Be Your Name - worship, contemporary, Matt Redman | https://www.youtube.com/watch?v=DXDGE_lRI0E
+In Christ Alone - hymn, contemporary, Keith Getty | https://www.youtube.com/watch?v=16KYvfIE3Ws
+Holy Spirit - worship, contemporary, Francesca Battistelli | https://www.youtube.com/watch?v=qNuKQXsVfzE
+Cornerstone - worship, contemporary, Hillsong Live | https://www.youtube.com/watch?v=izrk-erhDdk
+What A Beautiful Name - worship, contemporary, Hillsong Worship | https://www.youtube.com/watch?v=nQWFzMvCfLE
+Good Good Father - worship, contemporary, Chris Tomlin | https://www.youtube.com/watch?v=CqBmjvzOSdA
+Reckless Love - worship, contemporary, Cory Asbury | https://www.youtube.com/watch?v=Sc6SSHuZvQE
+Build My Life - worship, contemporary, Housefires | https://www.youtube.com/watch?v=QvLxZEU9QTM
+King of My Heart - worship, contemporary, Bethel Music | https://www.youtube.com/watch?v=KXGNBaWCBDM
+野地的花 (Flowers of the Field) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=FkBDZ8Davvs
+耶和華祝福滿滿 (Jehovah's Blessings) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=8HcyZXGGGGk
+我要向高山舉目 (I Will Lift My Eyes) - chinese, worship, hymn | https://www.youtube.com/watch?v=dQw4w9WgXcQ
+恩典夠用 (Grace is Sufficient) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=2Z4m4lnjxkY
+主的喜樂是我力量 (The Joy of the Lord) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=Jbsl_Zt1MQs
+奇異恩典 (Amazing Grace) - chinese, hymn, traditional | https://www.youtube.com/watch?v=zDKcevMFUCo
+耶穌愛你 (Jesus Loves You) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=5hfYJsQAhl0
+我心靈得安寧 (It Is Well With My Soul) - chinese, hymn, traditional | https://www.youtube.com/watch?v=AjxiQAAUBSk
+神的兒女 (Children of God) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=kJQP7kiw5Fk
+主是我力量 (The Lord is My Strength) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=lp-EO5I60KA
+讚美主 (Praise the Lord) - chinese, worship, traditional | https://www.youtube.com/watch?v=oHg5SJYRHA0
+耶穌基督是主 (Jesus Christ is Lord) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=cPAbx5kgCJo
+愛的真諦 (Love Chapter) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=hFcLyDb6niA
+主禱文 (The Lord's Prayer) - chinese, worship, traditional | https://www.youtube.com/watch?v=VbfpW0pbvaU
+我要歌頌 (I Will Sing) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=YQHsXMglC9A
+耶穌恩友 (What a Friend We Have in Jesus) - chinese, hymn, traditional | https://www.youtube.com/watch?v=HstZEEh8owE
+主愛長闊高深 (The Love of Christ) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=6NXnxTNIWkc
+我的心你要稱頌耶和華 (Bless the Lord O My Soul) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=DXDGE_lRI0E
+神羔羊 (Lamb of God) - chinese, worship, 讚美之泉 | https://www.youtube.com/watch?v=dy9nwe9_xzw
+因祂活著 (Because He Lives) - chinese, hymn, traditional | https://www.youtube.com/watch?v=AjxiQAAUBSk
