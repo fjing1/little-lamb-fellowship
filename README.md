@@ -1,51 +1,209 @@
-# Little Lamb Fellowship - Austin Chinese Church
+# Little Lamb Fellowship Website
 
-A simple, GitHub Pages–friendly static site for the youth fellowship.
+A modern, accessible static website for the Little Lamb Fellowship young professional group at Austin Chinese Church.
 
-## Features
-- Events/announcements from `data/events.json`
-- Song library from `data/songs.txt` (searchable)
-- Prayer form (Formspree-ready)
-- Photo gallery
-- Dark mode + QR share modal
-- Verse of the day
+## 🚀 Recent Improvements
 
-## Getting Started
-1. Copy everything in this folder to your repository root.
-2. In GitHub: **Settings → Pages**, serve from the `main` branch (root).
-3. Replace placeholder images in `assets/images/` with your own.
-4. Update `data/events.json` and `data/songs.txt` regularly.
-5. In `contact.html`, replace the `form` action with your Formspree endpoint.
+### ✅ Fixed Issues
+- **HTML Validation**: Fixed typos and inconsistent CSS paths
+- **CSS Organization**: Consolidated styles and fixed broken links
+- **Form Integration**: Unified Formspree endpoints across all forms
+- **Responsive Design**: Enhanced mobile experience with better navigation
 
-### Events JSON structure
+### 🎨 Enhanced Design
+- **Modern UI**: Updated with CSS custom properties and smooth transitions
+- **Dark/Light Theme**: Improved theme toggle with better contrast
+- **Interactive Elements**: Enhanced buttons, cards, and form elements
+- **Loading States**: Added visual feedback for async operations
+
+### ♿ Accessibility Improvements
+- **Skip Links**: Added for keyboard navigation
+- **ARIA Labels**: Proper labeling for screen readers
+- **Focus Management**: Visible focus indicators and logical tab order
+- **Form Accessibility**: Enhanced form labels and validation feedback
+- **Color Contrast**: Improved contrast ratios for better readability
+
+### 📱 Mobile Optimization
+- **Responsive Navigation**: Mobile-friendly header with collapsible nav
+- **Touch Targets**: Minimum 44px touch targets for better usability
+- **Viewport Meta**: Proper mobile viewport configuration
+- **Progressive Enhancement**: Works without JavaScript
+
+### ⚡ Performance Enhancements
+- **Error Handling**: Robust error handling with user-friendly messages
+- **Loading Optimization**: Lazy loading for images and async content
+- **Timeout Management**: Request timeouts to prevent hanging
+- **Debounced Search**: Optimized search functionality
+- **Resource Optimization**: Efficient CSS and JavaScript loading
+
+### 🔒 Security Features
+- **Honeypot Protection**: Spam prevention in forms
+- **Input Sanitization**: XSS protection with HTML escaping
+- **HTTPS Links**: Secure external links with proper rel attributes
+
+## 📁 Project Structure
+
+```
+├── index.html              # Homepage
+├── events.html             # Events and announcements
+├── songs.html              # Song library with search
+├── contact.html            # Prayer request form
+├── photos.html             # Photo gallery
+├── assets/
+│   ├── css/
+│   │   ├── style.css       # Main styles
+│   │   └── theme.css       # Theme enhancements
+│   ├── js/
+│   │   └── script.js       # Main JavaScript
+│   └── images/             # Images and assets
+├── data/
+│   ├── events.json         # Event data
+│   └── songs.txt           # Song library data
+└── resource/               # Additional resources
+```
+
+## 🛠️ Setup & Development
+
+### Prerequisites
+- Modern web browser
+- Local web server (optional, for development)
+
+### Quick Start
+1. Clone or download the repository
+2. Open `index.html` in a web browser
+3. For development, use a local server:
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Node.js (with http-server)
+   npx http-server
+   
+   # PHP
+   php -S localhost:8000
+   ```
+
+### Content Management
+
+#### Adding Events
+Edit `data/events.json`:
 ```json
-[
-  {
-    "title": "Event title",
-    "date": "2025-09-09T18:30:00-05:00",
-    "location": "Apple Park",
-    "excerpt": "Food, games, worship—kick off the new year with friends!",
-    "signup_url": "https://example.com/signup",
-    "DRI":"tim"
-  }
-]
+{
+  "title": "Event Name",
+  "date": "2025-12-25T18:00:00-06:00",
+  "location": "Location Name",
+  "excerpt": "Brief description",
+  "signup_url": "https://example.com/signup" // optional
+}
 ```
 
-### Songs TXT format
-Each line:
+#### Adding Songs
+Edit `data/songs.txt`:
 ```
-Title - optional tags, comma separated | https://link-to-file.pdf
-```
-Example:
-```
-Amazing Grace - hymn | https://example.com/amazing-grace.pdf
+Song Title - tag1, tag2 | https://example.com/song.pdf
 ```
 
-## Optional
-- Add more pages or sections as needed.
-- If your repository serves at a subfolder, adjust links accordingly.
+#### Adding Photos
+1. Add images to `assets/images/`
+2. Update `photos.html` with new `<figure>` elements
+3. Use descriptive alt text for accessibility
 
+### Form Configuration
+Update Formspree endpoints in:
+- `index.html` (signup form)
+- `events.html` (signup form)
+- `contact.html` (prayer form)
 
-## https://formspree.io
- endpoint: https://formspree.io/f/mandojop
- email send to fjing007
+Replace `https://formspree.io/f/mandojop` with your endpoint.
+
+## 🎯 Features
+
+### Navigation
+- Sticky header with backdrop blur
+- Active page highlighting
+- Mobile-responsive collapsible menu
+- Skip links for accessibility
+
+### Theme System
+- Automatic dark/light mode detection
+- Manual theme toggle
+- Persistent theme preference
+- High contrast support
+
+### Event Management
+- Dynamic event loading from JSON
+- Automatic past/future sorting
+- Signup integration
+- Loading states and error handling
+
+### Song Library
+- Real-time search functionality
+- Tag-based filtering
+- Bulk download capability
+- Responsive card layout
+
+### Forms
+- Spam protection with honeypots
+- Client-side validation
+- Accessible error messages
+- Progressive enhancement
+
+## 🔧 Customization
+
+### Colors
+Modify CSS custom properties in `assets/css/style.css`:
+```css
+:root {
+  --brand: #2563eb;        /* Primary brand color */
+  --accent: #3b82f6;       /* Accent color */
+  --bg: #ffffff;           /* Background */
+  --fg: #0f172a;           /* Foreground text */
+}
+```
+
+### Typography
+Update font stack in the body selector:
+```css
+body {
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+```
+
+### Layout
+Adjust container max-width:
+```css
+.container {
+  max-width: 1000px; /* Adjust as needed */
+}
+```
+
+## 📊 Browser Support
+
+- Chrome/Edge 88+
+- Firefox 85+
+- Safari 14+
+- Mobile browsers with ES2020 support
+
+## 🤝 Contributing
+
+1. Test changes across different browsers and devices
+2. Ensure accessibility standards are maintained
+3. Validate HTML and CSS
+4. Test with JavaScript disabled
+5. Check mobile responsiveness
+
+## 📝 License
+
+This project is for Little Lamb Fellowship at Austin Chinese Church. Please respect the community and use responsibly.
+
+## 🆘 Support
+
+For technical issues or questions:
+1. Check browser console for errors
+2. Verify all file paths are correct
+3. Ensure forms are properly configured
+4. Test with a local server for development
+
+---
+
+*Built with ❤️ for the Little Lamb Fellowship community*
