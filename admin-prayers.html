@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLF Prayer Admin Dashboard</title>
+  <meta name="description" content="Admin dashboard for viewing encrypted prayer requests" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css?v=2">
+  <link rel="icon" href="assets/images/favicon.png">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    .admin-warning {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .key-input {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .prayer-item {
+      border-left: 4px solid var(--brand);
+      margin-bottom: 1rem;
+    }
+    
+    .prayer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .prayer-content {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .encrypted-indicator {
+      background: #dc2626;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+    }
+    
+    .decrypted-indicator {
+      background: #16a34a;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">LLF Admin</a>
+      <nav aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="admin-prayers.html" class="active">Prayer Dashboard</a>
+      </nav>
+      <div class="header-actions">
+        <button id="modeToggle" class="btn ghost" aria-pressed="false" aria-label="Toggle dark mode">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <section class="card">
+      <h1>🔒 Prayer Request Admin Dashboard</h1>
+      
+      <div class="admin-warning">
+        <strong>⚠️ Confidential Area</strong><br>
+        This dashboard contains sensitive prayer requests. Only authorized prayer team leaders should access this page.
+        All prayer requests are encrypted and require the admin key to view.
+      </div>
+
+      <div class="card">
+        <h2>Admin Authentication</h2>
+        <label for="adminKey">Admin Decryption Key:</label>
+        <textarea id="adminKey" class="key-input" rows="3" placeholder="Paste your admin key here..."></textarea>
+        <div class="toolbar">
+          <button id="loadPrayers" class="btn">Load Prayer Requests</button>
+          <button id="generateKey" class="btn ghost">Generate New Key</button>
+          <button id="testKey" class="btn ghost">Test Key</button>
+        </div>
+        <p id="keyStatus" class="muted small" role="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>Prayer Requests</h2>
+        <div class="toolbar">
+          <span id="prayerCount" class="muted">No prayers loaded</span>
+          <button id="refreshPrayers" class="btn ghost" disabled>Refresh</button>
+          <button id="exportPrayers" class="btn ghost" disabled>Export</button>
+        </div>
+        <div id="prayerList" class="list">
+          <p class="muted">Enter your admin key and click "Load Prayer Requests" to view encrypted prayers.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="year"></span> Little Lamb Fellowship · Confidential Prayer Dashboard</small>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js" defer></script>
+  <script src="assets/js/prayer-encryption.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const adminKeyInput = document.getElementById('adminKey');
+      const loadBtn = document.getElementById('loadPrayers');
+      const generateBtn = document.getElementById('generateKey');
+      const testBtn = document.getElementById('testKey');
+      const refreshBtn = document.getElementById('refreshPrayers');
+      const exportBtn = document.getElementById('exportPrayers');
+      const keyStatus = document.getElementById('keyStatus');
+      const prayerList = document.getElementById('prayerList');
+      const prayerCount = document.getElementById('prayerCount');
+      
+      let encryptionSystem = new EncryptedPrayerSystem();
+      let currentKey = null;
+      let decryptedPrayers = [];
+
+      // Generate new admin key
+      generateBtn.addEventListener('click', async function() {
+        try {
+          keyStatus.textContent = 'Generating new admin key...';
+          const keyPackage = await encryptionSystem.generateAdminKeyPackage();
+          
+          // Show the key and instructions
+          const modal = document.createElement('dialog');
+          modal.className = 'modal';
+          modal.innerHTML = `
+            <article class="card">
+              <header class="modal-header">
+                <h3>🔑 New Admin Key Generated</h3>
+                <button class="btn ghost" onclick="this.closest('dialog').close()">✕</button>
+              </header>
+              <div class="admin-warning">
+                <strong>⚠️ IMPORTANT:</strong> Save this key securely! You cannot recover it if lost.
+              </div>
+              <label>Admin Key (copy and save securely):</label>
+              <textarea readonly class="key-input" rows="4">${keyPackage.keyString}</textarea>
+              <div class="toolbar">
+                <button class="btn" onclick="navigator.clipboard.writeText('${keyPackage.keyString}'); this.textContent='Copied!'">Copy Key</button>
+                <button class="btn ghost" onclick="this.closest('dialog').close()">Close</button>
+              </div>
+              <details>
+                <summary>Full Instructions</summary>
+                <pre style="font-size: 0.8rem; white-space: pre-wrap;">${keyPackage.instructions}</pre>
+              </details>
+            </article>
+          `;
+          document.body.appendChild(modal);
+          modal.showModal();
+          
+          keyStatus.textContent = 'New admin key generated successfully.';
+          keyStatus.className = 'muted small status-success';
+          
+        } catch (error) {
+          keyStatus.textContent = 'Failed to generate key: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+        }
+      });
+
+      // Test admin key
+      testBtn.addEventListener('click', async function() {
+        const keyString = adminKeyInput.value.trim();
+        if (!keyString) {
+          keyStatus.textContent = 'Please enter an admin key first.';
+          keyStatus.className = 'muted small status-error';
+          return;
+        }
+
+        try {
+          keyStatus.textContent = 'Testing admin key...';
+          currentKey = await encryptionSystem.importKey(keyString);
+          
+          // Test encryption/decryption
+          const testData = 'Test prayer request';
+          const encrypted = await encryptionSystem.encryptPrayerRequest(testData, currentKey);
+          const decrypted = await encryptionSystem.decryptPrayerRequest(encrypted, currentKey);
+          
+          if (decrypted === testData) {
+            keyStatus.textContent = '✅ Admin key is valid and working!';
+            keyStatus.className = 'muted small status-success';
+            loadBtn.disabled = false;
+            refreshBtn.disabled = false;
+          } else {
+            throw new Error('Decryption test failed');
+          }
+          
+        } catch (error) {
+          keyStatus.textContent = '❌ Invalid admin key: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+          currentKey = null;
+          loadBtn.disabled = true;
+          refreshBtn.disabled = true;
+        }
+      });
+
+      // Load prayer requests
+      loadBtn.addEventListener('click', async function() {
+        if (!currentKey) {
+          keyStatus.textContent = 'Please test your admin key first.';
+          keyStatus.className = 'muted small status-error';
+          return;
+        }
+
+        try {
+          keyStatus.textContent = 'Loading encrypted prayer requests...';
+          
+          // Try to load from GitHub or local storage
+          let prayers = [];
+          
+          // For demo, create some sample encrypted prayers
+          if (prayers.length === 0) {
+            prayers = await createSamplePrayers();
+          }
+          
+          // Decrypt prayers
+          decryptedPrayers = [];
+          for (const prayer of prayers) {
+            try {
+              const decrypted = await encryptionSystem.decryptPrayerRequestForAdmin(prayer, currentKey);
+              decryptedPrayers.push(decrypted);
+            } catch (error) {
+              console.error('Failed to decrypt prayer:', error);
+              // Keep encrypted version for display
+              decryptedPrayers.push({
+                ...prayer,
+                decryptionError: error.message
+              });
+            }
+          }
+          
+          displayPrayers(decryptedPrayers);
+          prayerCount.textContent = `${decryptedPrayers.length} prayer requests loaded`;
+          exportBtn.disabled = false;
+          
+          keyStatus.textContent = `Successfully loaded ${decryptedPrayers.length} prayer requests.`;
+          keyStatus.className = 'muted small status-success';
+          
+        } catch (error) {
+          keyStatus.textContent = 'Failed to load prayers: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+        }
+      });
+
+      // Display prayers in the UI
+      function displayPrayers(prayers) {
+        if (prayers.length === 0) {
+          prayerList.innerHTML = '<p class="muted">No prayer requests found.</p>';
+          return;
+        }
+
+        prayerList.innerHTML = prayers.map(prayer => {
+          const isDecrypted = prayer.decryptedData && !prayer.decryptionError;
+          const indicator = isDecrypted ? 
+            '<span class="decrypted-indicator">Decrypted</span>' :
+            '<span class="encrypted-indicator">Encrypted</span>';
+          
+          let content = '';
+          if (isDecrypted) {
+            const data = prayer.decryptedData;
+            content = `
+              <div class="prayer-content">
+                <strong>From:</strong> ${data.name}<br>
+                ${data.email ? `<strong>Email:</strong> ${data.email}<br>` : ''}
+                <strong>Submitted:</strong> ${new Date(data.timestamp).toLocaleString()}<br><br>
+                <strong>Prayer Request:</strong><br>
+                <p>${data.request}</p>
+              </div>
+            `;
+          } else {
+            content = `
+              <div class="prayer-content">
+                <p class="muted">
+                  ${prayer.decryptionError ? 
+                    `❌ Decryption failed: ${prayer.decryptionError}` :
+                    '🔒 Encrypted content - admin key required'
+                  }
+                </p>
+                <small>Submitted: ${new Date(prayer.timestamp).toLocaleString()}</small>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="prayer-item card">
+              <div class="prayer-meta">
+                <span>Prayer #${prayer.id}</span>
+                ${indicator}
+              </div>
+              ${content}
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Create sample encrypted prayers for demo
+      async function createSamplePrayers() {
+        if (!currentKey) return [];
+        
+        const samples = [
+          {
+            name: 'Sarah',
+            request: 'Please pray for my family during this difficult time. We are facing some health challenges.',
+            email: 'sarah@example.com'
+          },
+          {
+            name: 'Anonymous',
+            request: 'Pray for wisdom in making an important life decision.',
+            email: null
+          }
+        ];
+
+        const prayers = [];
+        for (const sample of samples) {
+          const encrypted = await encryptionSystem.createEncryptedPrayerRequest(
+            sample.name,
+            sample.request,
+            sample.email,
+            currentKey
+          );
+          prayers.push(encrypted);
+        }
+        
+        return prayers;
+      }
+
+      // Export prayers
+      exportBtn.addEventListener('click', function() {
+        if (decryptedPrayers.length === 0) return;
+        
+        const exportData = decryptedPrayers
+          .filter(p => p.decryptedData)
+          .map(p => ({
+            id: p.id,
+            timestamp: p.timestamp,
+            name: p.decryptedData.name,
+            email: p.decryptedData.email,
+            request: p.decryptedData.request
+          }));
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+          type: 'application/json'
+        });
+        
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `llf-prayers-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    });
+  </script>
+</body>
+</html>
