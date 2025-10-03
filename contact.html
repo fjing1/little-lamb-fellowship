@@ -3,13 +3,255 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Little Lamb Fellowship — Youth</title>
-  <meta name="description" content="A welcoming Christian youth community — friends, service, and growth." />
+  <title>Little Lamb Fellowship — Prayer Center</title>
+  <meta name="description" content="Submit prayer requests and admin dashboard for prayer team leaders." />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/theme.css?v=2">
   <link rel="icon" href="assets/images/favicon.png">
   <meta name="theme-color" content="#2563eb">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    /* Tab Navigation Styles */
+    .tab-nav {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+    }
+    
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+    
+    .tab-btn:hover {
+      color: var(--fg);
+      background: var(--card);
+    }
+    
+    .tab-btn.active {
+      color: var(--brand);
+      border-bottom-color: var(--brand);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Admin Styles */
+    .admin-warning {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .key-input {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .prayer-item {
+      border-left: 4px solid var(--brand);
+      margin-bottom: 1rem;
+    }
+    
+    .prayer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .prayer-content {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .encrypted-indicator {
+      background: #dc2626;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+    }
+    
+    .decrypted-indicator {
+      background: #16a34a;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+    }
+    
+    /* Financial Tracking Styles */
+    .financial-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--card);
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--brand);
+    }
+    
+    .summary-label {
+      font-weight: 600;
+      color: var(--fg);
+    }
+    
+    .summary-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .transaction-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    
+    .transaction-item:hover {
+      background: var(--card);
+    }
+    
+    .transaction-info {
+      flex: 1;
+    }
+    
+    .transaction-amount {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .transaction-amount.income {
+      color: #16a34a;
+    }
+    
+    .transaction-amount.expense {
+      color: #dc2626;
+    }
+    
+    .transaction-meta {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    
+    .category-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    
+    .category-item {
+      padding: 1rem;
+      background: var(--card);
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--brand);
+    }
+    
+    .category-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .category-amount {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .action-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .tab-nav {
+        flex-direction: column;
+      }
+      
+      .tab-btn {
+        text-align: left;
+        border-bottom: none;
+        border-left: 2px solid transparent;
+      }
+      
+      .tab-btn.active {
+        border-left-color: var(--brand);
+        border-bottom-color: transparent;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .financial-summary {
+        grid-template-columns: 1fr;
+      }
+      
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-controls,
+      .action-controls {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -19,7 +261,7 @@
       <nav aria-label="Primary">
         <a href="events.html">Events</a>
         <a href="songs.html">Songs</a>
-        <a href="contact.html">Prayer</a>
+        <a href="contact.html" class="active">Prayer</a>
         <a href="photos.html">Photos</a>
       </nav>
       <div class="header-actions">
@@ -31,34 +273,242 @@
 
   <main class="container" id="main">
     <section class="card">
-      <h1>Prayer Request</h1>
-      <form action="https://formspree.io/f/mandojop" method="POST" id="prayForm" novalidate>
-        <label for="pray-name">Name (optional)
-          <input type="text" id="pray-name" name="name" autocomplete="name" />
-        </label>
-        <label for="pray-request">How can we pray for you? *
-          <textarea id="pray-request" name="request" rows="5" required aria-describedby="pray-request-help"></textarea>
-          <div id="pray-request-help" class="field-help muted small">Share what's on your heart - we're here to pray with you.</div>
-        </label>
-        <label for="pray-email">Email for follow‑up (optional)
-          <input type="email" id="pray-email" name="email" autocomplete="email" />
-        </label>
-        
-        <!-- Honeypot for spam protection -->
-        <div style="position:absolute; left:-9999px" aria-hidden="true">
-          <label>Leave empty <input type="text" name="_hp"></label>
+      <h1>Prayer Center</h1>
+      
+      <!-- Tab Navigation -->
+      <div class="tab-nav" role="tablist">
+        <button class="tab-btn active" data-tab="prayer-form" role="tab" aria-selected="true" aria-controls="prayer-form">Submit Prayer Request</button>
+        <button class="tab-btn" data-tab="admin-dashboard" role="tab" aria-selected="false" aria-controls="admin-dashboard">Admin Dashboard</button>
+        <button class="tab-btn" data-tab="financial-tracking" role="tab" aria-selected="false" aria-controls="financial-tracking">Financial Tracking</button>
+      </div>
+
+      <!-- Prayer Form Tab -->
+      <div id="prayer-form" class="tab-content active" role="tabpanel">
+        <h2>Prayer Request</h2>
+        <form id="prayForm" novalidate>
+          <label for="pray-name">Name (optional)
+            <input type="text" id="pray-name" name="name" autocomplete="name" />
+          </label>
+          <label for="pray-request">How can we pray for you? *
+            <textarea id="pray-request" name="request" rows="5" required aria-describedby="pray-request-help"></textarea>
+            <div id="pray-request-help" class="field-help muted small">Share what's on your heart - we're here to pray with you.</div>
+          </label>
+          <label for="pray-email">Email for follow‑up (optional)
+            <input type="email" id="pray-email" name="email" autocomplete="email" />
+          </label>
+          
+          <!-- Honeypot for spam protection -->
+          <div style="position:absolute; left:-9999px" aria-hidden="true">
+            <label>Leave empty <input type="text" name="_hp"></label>
+          </div>
+          
+          <button class="btn" type="submit">Send Prayer Request</button>
+          <p id="prayStatus" class="muted small" role="status" aria-live="polite"></p>
+        </form>
+        <p class="muted small">Or email <a href="mailto:leaders@example.com">leaders@example.com</a></p>
+      </div>
+
+      <!-- Admin Dashboard Tab -->
+      <div id="admin-dashboard" class="tab-content" role="tabpanel">
+        <div id="admin-login" class="admin-section">
+          <h2>🔒 Admin Login</h2>
+          <div class="admin-warning">
+            <strong>⚠️ Authorized Personnel Only</strong><br>
+            This area is restricted to prayer team leaders and authorized staff.
+          </div>
+          
+          <form id="adminLoginForm">
+            <label for="admin-username">Username:
+              <input type="text" id="admin-username" name="username" required autocomplete="username" />
+            </label>
+            <label for="admin-password">Password:
+              <input type="password" id="admin-password" name="password" required autocomplete="current-password" />
+            </label>
+            <button class="btn" type="submit">Login</button>
+            <p id="loginStatus" class="muted small" role="status"></p>
+          </form>
         </div>
-        
-        <button class="btn" type="submit">Send Prayer Request</button>
-        <p id="prayStatus" class="muted small" role="status" aria-live="polite"></p>
-      </form>
-      <p class="muted small">Or email <a href="mailto:leaders@example.com">leaders@example.com</a></p>
+
+        <div id="admin-panel" class="admin-section" style="display: none;">
+          <div class="admin-header">
+            <h2>🔒 Prayer Request Dashboard</h2>
+            <button id="adminLogout" class="btn ghost">Logout</button>
+          </div>
+          
+          <div class="card">
+            <h3>Encryption Key Management</h3>
+            <label for="adminKey">Admin Decryption Key:</label>
+            <textarea id="adminKey" class="key-input" rows="3" placeholder="Paste your admin key here..."></textarea>
+            <div class="toolbar">
+              <button id="loadPrayers" class="btn">Load Prayer Requests</button>
+              <button id="generateKey" class="btn ghost">Generate New Key</button>
+              <button id="testKey" class="btn ghost">Test Key</button>
+            </div>
+            <p id="keyStatus" class="muted small" role="status"></p>
+          </div>
+
+          <div class="card">
+            <h3>Prayer Requests</h3>
+            <div class="toolbar">
+              <span id="prayerCount" class="muted">No prayers loaded</span>
+              <button id="refreshPrayers" class="btn ghost" disabled>Refresh</button>
+              <button id="exportPrayers" class="btn ghost" disabled>Export</button>
+            </div>
+            <div id="prayerList" class="list">
+              <p class="muted">Enter your admin key and click "Load Prayer Requests" to view encrypted prayers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Tracking Tab -->
+      <div id="financial-tracking" class="tab-content" role="tabpanel">
+        <div id="financial-login" class="admin-section">
+          <h2>💰 Financial Management Login</h2>
+          <div class="admin-warning">
+            <strong>⚠️ Treasurer & Leadership Only</strong><br>
+            This area contains sensitive financial information and is restricted to authorized financial officers.
+          </div>
+          
+          <form id="financialLoginForm">
+            <label for="financial-username">Username:
+              <input type="text" id="financial-username" name="username" required autocomplete="username" />
+            </label>
+            <label for="financial-password">Password:
+              <input type="password" id="financial-password" name="password" required autocomplete="current-password" />
+            </label>
+            <button class="btn" type="submit">Login</button>
+            <p id="financialLoginStatus" class="muted small" role="status"></p>
+          </form>
+        </div>
+
+        <div id="financial-panel" class="admin-section" style="display: none;">
+          <div class="admin-header">
+            <h2>💰 LLF Financial Dashboard</h2>
+            <button id="financialLogout" class="btn ghost">Logout</button>
+          </div>
+
+          <!-- Financial Summary -->
+          <div class="card">
+            <h3>📊 Financial Summary</h3>
+            <div class="financial-summary">
+              <div class="summary-item">
+                <span class="summary-label">Total Offerings:</span>
+                <span class="summary-value" id="totalOfferings">$0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Total Expenses:</span>
+                <span class="summary-value" id="totalExpenses">$0.00</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Net Balance:</span>
+                <span class="summary-value" id="netBalance">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Transaction -->
+          <div class="card">
+            <h3>➕ Add Transaction</h3>
+            <form id="transactionForm">
+              <div class="form-row">
+                <label for="transaction-type">Type:
+                  <select id="transaction-type" name="type" required>
+                    <option value="">Select Type</option>
+                    <option value="offering">Offering (Income)</option>
+                    <option value="expense">Expense (Outgoing)</option>
+                  </select>
+                </label>
+                <label for="transaction-amount">Amount:
+                  <input type="number" id="transaction-amount" name="amount" step="0.01" min="0" required placeholder="0.00" />
+                </label>
+              </div>
+              
+              <div class="form-row">
+                <label for="transaction-category">Category:
+                  <select id="transaction-category" name="category" required>
+                    <option value="">Select Category</option>
+                    <!-- Offering Categories -->
+                    <optgroup label="Offering Types">
+                      <option value="general-offering">General Offering</option>
+                      <option value="tithe">Tithe</option>
+                      <option value="special-offering">Special Offering</option>
+                      <option value="missions">Missions</option>
+                    </optgroup>
+                    <!-- Expense Categories -->
+                    <optgroup label="Expense Categories">
+                      <option value="food">Food & Refreshments</option>
+                      <option value="events">Events & Activities</option>
+                      <option value="birthday">Birthday Celebrations</option>
+                      <option value="supplies">Supplies & Materials</option>
+                      <option value="venue">Venue & Facilities</option>
+                      <option value="transportation">Transportation</option>
+                      <option value="gifts">Gifts & Appreciation</option>
+                      <option value="outreach">Outreach & Ministry</option>
+                      <option value="other">Other</option>
+                    </optgroup>
+                  </select>
+                </label>
+                <label for="transaction-date">Date:
+                  <input type="date" id="transaction-date" name="date" required />
+                </label>
+              </div>
+
+              <label for="transaction-description">Description:
+                <input type="text" id="transaction-description" name="description" placeholder="Brief description of transaction" />
+              </label>
+
+              <label for="transaction-notes">Notes (optional):
+                <textarea id="transaction-notes" name="notes" rows="2" placeholder="Additional notes or details"></textarea>
+              </label>
+
+              <button class="btn" type="submit">Add Transaction</button>
+              <p id="transactionStatus" class="muted small" role="status"></p>
+            </form>
+          </div>
+
+          <!-- Transaction History -->
+          <div class="card">
+            <h3>📋 Transaction History</h3>
+            <div class="toolbar">
+              <div class="filter-controls">
+                <select id="filter-category">
+                  <option value="">All Categories</option>
+                  <option value="offering">Offerings</option>
+                  <option value="expense">Expenses</option>
+                  <option value="food">Food</option>
+                  <option value="events">Events</option>
+                  <option value="birthday">Birthday</option>
+                </select>
+                <input type="month" id="filter-month" />
+                <button id="applyFilters" class="btn ghost">Filter</button>
+              </div>
+              <div class="action-controls">
+                <button id="exportFinancial" class="btn ghost">Export CSV</button>
+                <button id="clearData" class="btn ghost" style="color: #dc2626;">Clear All</button>
+              </div>
+            </div>
+            
+            <div id="transactionList" class="transaction-list">
+              <p class="muted">No transactions recorded yet. Add your first transaction above.</p>
+            </div>
+          </div>
+
+          <!-- Category Breakdown -->
+          <div class="card">
+            <h3>📈 Category Breakdown</h3>
+            <div id="categoryBreakdown" class="category-breakdown">
+              <p class="muted">Add transactions to see category breakdown.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <small>© <span id="year"></span> Little Lamb Fellowship Youth · You're loved & welcome here.</small>
+      <small>© <span id="year"></span> Little Lamb Fellowship · You're loved & welcome here.</small>
       <div id="verseBox" class="verse" aria-live="polite"></div>
     </div>
   </footer>
@@ -78,8 +528,330 @@
   <script src="assets/js/script.js" defer></script>
   <script src="assets/js/prayer-encryption.js" defer></script>
   <script>
-    // Encrypted prayer form handling
     document.addEventListener('DOMContentLoaded', function() {
+      // Tab functionality
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetTab = btn.getAttribute('data-tab');
+          
+          // Update tab buttons
+          tabBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          
+          // Update tab content
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+          });
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+
+      // Admin login functionality
+      const adminLoginForm = document.getElementById('adminLoginForm');
+      const adminLogin = document.getElementById('admin-login');
+      const adminPanel = document.getElementById('admin-panel');
+      const adminLogout = document.getElementById('adminLogout');
+      const loginStatus = document.getElementById('loginStatus');
+
+      // Simple username/password authentication (in production, use proper authentication)
+      const ADMIN_CREDENTIALS = {
+        'admin': 'prayer2024',
+        'pastor': 'llf2024',
+        'leader': 'fellowship'
+      };
+
+      adminLoginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('admin-username').value.trim();
+        const password = document.getElementById('admin-password').value;
+        
+        if (ADMIN_CREDENTIALS[username] && ADMIN_CREDENTIALS[username] === password) {
+          loginStatus.textContent = '✅ Login successful!';
+          loginStatus.className = 'muted small status-success';
+          
+          setTimeout(() => {
+            adminLogin.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loginStatus.textContent = '';
+          }, 1000);
+        } else {
+          loginStatus.textContent = '❌ Invalid username or password';
+          loginStatus.className = 'muted small status-error';
+        }
+      });
+
+      adminLogout.addEventListener('click', function() {
+        adminPanel.style.display = 'none';
+        adminLogin.style.display = 'block';
+        adminLoginForm.reset();
+        loginStatus.textContent = '';
+      });
+
+      // Admin dashboard functionality (from admin-prayers.html)
+      const adminKeyInput = document.getElementById('adminKey');
+      const loadBtn = document.getElementById('loadPrayers');
+      const generateBtn = document.getElementById('generateKey');
+      const testBtn = document.getElementById('testKey');
+      const refreshBtn = document.getElementById('refreshPrayers');
+      const exportBtn = document.getElementById('exportPrayers');
+      const keyStatus = document.getElementById('keyStatus');
+      const prayerList = document.getElementById('prayerList');
+      const prayerCount = document.getElementById('prayerCount');
+      
+      let encryptionSystem = new EncryptedPrayerSystem();
+      let currentKey = null;
+      let decryptedPrayers = [];
+
+      // Generate new admin key
+      generateBtn.addEventListener('click', async function() {
+        try {
+          keyStatus.textContent = 'Generating new admin key...';
+          const keyPackage = await encryptionSystem.generateAdminKeyPackage();
+          
+          // Show the key and instructions
+          const modal = document.createElement('dialog');
+          modal.className = 'modal';
+          modal.innerHTML = `
+            <article class="card">
+              <header class="modal-header">
+                <h3>🔑 New Admin Key Generated</h3>
+                <button class="btn ghost" onclick="this.closest('dialog').close()">✕</button>
+              </header>
+              <div class="admin-warning">
+                <strong>⚠️ IMPORTANT:</strong> Save this key securely! You cannot recover it if lost.
+              </div>
+              <label>Admin Key (copy and save securely):</label>
+              <textarea readonly class="key-input" rows="4">${keyPackage.keyString}</textarea>
+              <div class="toolbar">
+                <button class="btn" onclick="navigator.clipboard.writeText('${keyPackage.keyString}'); this.textContent='Copied!'">Copy Key</button>
+                <button class="btn ghost" onclick="this.closest('dialog').close()">Close</button>
+              </div>
+            </article>
+          `;
+          document.body.appendChild(modal);
+          modal.showModal();
+          
+          keyStatus.textContent = 'New admin key generated successfully.';
+          keyStatus.className = 'muted small status-success';
+          
+        } catch (error) {
+          keyStatus.textContent = 'Failed to generate key: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+        }
+      });
+
+      // Test admin key
+      testBtn.addEventListener('click', async function() {
+        const keyString = adminKeyInput.value.trim();
+        if (!keyString) {
+          keyStatus.textContent = 'Please enter an admin key first.';
+          keyStatus.className = 'muted small status-error';
+          return;
+        }
+
+        try {
+          keyStatus.textContent = 'Testing admin key...';
+          currentKey = await encryptionSystem.importKey(keyString);
+          
+          // Test encryption/decryption
+          const testData = 'Test prayer request';
+          const encrypted = await encryptionSystem.encryptPrayerRequest(testData, currentKey);
+          const decrypted = await encryptionSystem.decryptPrayerRequest(encrypted, currentKey);
+          
+          if (decrypted === testData) {
+            keyStatus.textContent = '✅ Admin key is valid and working!';
+            keyStatus.className = 'muted small status-success';
+            loadBtn.disabled = false;
+            refreshBtn.disabled = false;
+          } else {
+            throw new Error('Decryption test failed');
+          }
+          
+        } catch (error) {
+          keyStatus.textContent = '❌ Invalid admin key: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+          currentKey = null;
+          loadBtn.disabled = true;
+          refreshBtn.disabled = true;
+        }
+      });
+
+      // Load prayer requests
+      loadBtn.addEventListener('click', async function() {
+        if (!currentKey) {
+          keyStatus.textContent = 'Please test your admin key first.';
+          keyStatus.className = 'muted small status-error';
+          return;
+        }
+
+        try {
+          keyStatus.textContent = 'Loading encrypted prayer requests...';
+          
+          // Load prayers from localStorage and create samples
+          let prayers = [];
+          
+          // Load from localStorage (submitted via contact form)
+          try {
+            const localPrayers = JSON.parse(localStorage.getItem('llf_encrypted_prayers') || '[]');
+            prayers = prayers.concat(localPrayers);
+          } catch (e) {
+            console.log('No local prayers found');
+          }
+          
+          // If no real prayers, create sample prayers for demo
+          if (prayers.length === 0) {
+            prayers = await createSamplePrayers();
+          }
+          
+          // Decrypt prayers
+          decryptedPrayers = [];
+          for (const prayer of prayers) {
+            try {
+              const decrypted = await encryptionSystem.decryptPrayerRequestForAdmin(prayer, currentKey);
+              decryptedPrayers.push(decrypted);
+            } catch (error) {
+              console.error('Failed to decrypt prayer:', error);
+              decryptedPrayers.push({
+                ...prayer,
+                decryptionError: error.message
+              });
+            }
+          }
+          
+          displayPrayers(decryptedPrayers);
+          prayerCount.textContent = `${decryptedPrayers.length} prayer requests loaded`;
+          exportBtn.disabled = false;
+          
+          keyStatus.textContent = `Successfully loaded ${decryptedPrayers.length} prayer requests.`;
+          keyStatus.className = 'muted small status-success';
+          
+        } catch (error) {
+          keyStatus.textContent = 'Failed to load prayers: ' + error.message;
+          keyStatus.className = 'muted small status-error';
+        }
+      });
+
+      // Create sample encrypted prayers for demo
+      async function createSamplePrayers() {
+        if (!currentKey) return [];
+        
+        const samples = [
+          {
+            name: 'Sarah',
+            request: 'Please pray for my family during this difficult time. We are facing some health challenges.',
+            email: 'sarah@example.com'
+          },
+          {
+            name: 'Anonymous',
+            request: 'Pray for wisdom in making an important life decision.',
+            email: null
+          },
+          {
+            name: 'John',
+            request: 'Please pray for my job search. I have been unemployed for several months and need God\'s guidance.',
+            email: 'john.doe@email.com'
+          }
+        ];
+
+        const prayers = [];
+        for (const sample of samples) {
+          const encrypted = await encryptionSystem.createEncryptedPrayerRequest(
+            sample.name,
+            sample.request,
+            sample.email,
+            currentKey
+          );
+          prayers.push(encrypted);
+        }
+        
+        return prayers;
+      }
+
+      // Display prayers in the UI
+      function displayPrayers(prayers) {
+        if (prayers.length === 0) {
+          prayerList.innerHTML = '<p class="muted">No prayer requests found.</p>';
+          return;
+        }
+
+        prayerList.innerHTML = prayers.map(prayer => {
+          const isDecrypted = prayer.decryptedData && !prayer.decryptionError;
+          const indicator = isDecrypted ? 
+            '<span class="decrypted-indicator">Decrypted</span>' :
+            '<span class="encrypted-indicator">Encrypted</span>';
+          
+          let content = '';
+          if (isDecrypted) {
+            const data = prayer.decryptedData;
+            content = `
+              <div class="prayer-content">
+                <strong>From:</strong> ${data.name}<br>
+                ${data.email ? `<strong>Email:</strong> ${data.email}<br>` : ''}
+                <strong>Submitted:</strong> ${new Date(data.timestamp).toLocaleString()}<br><br>
+                <strong>Prayer Request:</strong><br>
+                <p>${data.request}</p>
+              </div>
+            `;
+          } else {
+            content = `
+              <div class="prayer-content">
+                <p class="muted">
+                  ${prayer.decryptionError ? 
+                    `❌ Decryption failed: ${prayer.decryptionError}` :
+                    '🔒 Encrypted content - admin key required'
+                  }
+                </p>
+                <small>Submitted: ${new Date(prayer.timestamp).toLocaleString()}</small>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="prayer-item card">
+              <div class="prayer-meta">
+                <span>Prayer #${prayer.id}</span>
+                ${indicator}
+              </div>
+              ${content}
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Export prayers
+      exportBtn.addEventListener('click', function() {
+        if (decryptedPrayers.length === 0) return;
+        
+        const exportData = decryptedPrayers
+          .filter(p => p.decryptedData)
+          .map(p => ({
+            id: p.id,
+            timestamp: p.timestamp,
+            name: p.decryptedData.name,
+            email: p.decryptedData.email,
+            request: p.decryptedData.request
+          }));
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+          type: 'application/json'
+        });
+        
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `llf-prayers-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // Prayer form functionality
       const form = document.getElementById('prayForm');
       const status = document.getElementById('prayStatus');
       
@@ -209,6 +981,310 @@
           // Restore button state
           submitBtn.textContent = originalText;
           submitBtn.disabled = false;
+        }
+      });
+
+      // Financial tracking functionality
+      const financialLoginForm = document.getElementById('financialLoginForm');
+      const financialLogin = document.getElementById('financial-login');
+      const financialPanel = document.getElementById('financial-panel');
+      const financialLogout = document.getElementById('financialLogout');
+      const financialLoginStatus = document.getElementById('financialLoginStatus');
+
+      // Financial admin credentials
+      const FINANCIAL_CREDENTIALS = {
+        'treasurer': 'finance2024',
+        'pastor': 'llf2024',
+        'admin': 'money2024'
+      };
+
+      financialLoginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('financial-username').value.trim();
+        const password = document.getElementById('financial-password').value;
+        
+        if (FINANCIAL_CREDENTIALS[username] && FINANCIAL_CREDENTIALS[username] === password) {
+          financialLoginStatus.textContent = '✅ Financial access granted!';
+          financialLoginStatus.className = 'muted small status-success';
+          
+          setTimeout(() => {
+            financialLogin.style.display = 'none';
+            financialPanel.style.display = 'block';
+            financialLoginStatus.textContent = '';
+            loadFinancialData();
+          }, 1000);
+        } else {
+          financialLoginStatus.textContent = '❌ Invalid credentials';
+          financialLoginStatus.className = 'muted small status-error';
+        }
+      });
+
+      financialLogout.addEventListener('click', function() {
+        financialPanel.style.display = 'none';
+        financialLogin.style.display = 'block';
+        financialLoginForm.reset();
+        financialLoginStatus.textContent = '';
+      });
+
+      // Financial data management
+      let transactions = [];
+
+      function loadFinancialData() {
+        try {
+          const stored = localStorage.getItem('llf_financial_data');
+          transactions = stored ? JSON.parse(stored) : [];
+          updateFinancialSummary();
+          displayTransactions();
+          updateCategoryBreakdown();
+        } catch (error) {
+          console.error('Error loading financial data:', error);
+          transactions = [];
+        }
+      }
+
+      function saveFinancialData() {
+        try {
+          localStorage.setItem('llf_financial_data', JSON.stringify(transactions));
+        } catch (error) {
+          console.error('Error saving financial data:', error);
+        }
+      }
+
+      // Transaction form handling
+      const transactionForm = document.getElementById('transactionForm');
+      const transactionStatus = document.getElementById('transactionStatus');
+
+      // Set today's date as default
+      if (document.getElementById('transaction-date')) {
+        document.getElementById('transaction-date').valueAsDate = new Date();
+      }
+
+      transactionForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(transactionForm);
+        const transaction = {
+          id: Date.now(),
+          type: formData.get('type'),
+          amount: parseFloat(formData.get('amount')),
+          category: formData.get('category'),
+          date: formData.get('date'),
+          description: formData.get('description') || '',
+          notes: formData.get('notes') || '',
+          timestamp: new Date().toISOString()
+        };
+
+        transactions.unshift(transaction);
+        saveFinancialData();
+        updateFinancialSummary();
+        displayTransactions();
+        updateCategoryBreakdown();
+        
+        transactionForm.reset();
+        document.getElementById('transaction-date').valueAsDate = new Date();
+        
+        transactionStatus.textContent = '✅ Transaction added successfully!';
+        transactionStatus.className = 'muted small status-success';
+        
+        setTimeout(() => {
+          transactionStatus.textContent = '';
+        }, 3000);
+      });
+
+      function updateFinancialSummary() {
+        const offerings = transactions
+          .filter(t => t.type === 'offering')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expenses = transactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = offerings - expenses;
+
+        const totalOfferingsEl = document.getElementById('totalOfferings');
+        const totalExpensesEl = document.getElementById('totalExpenses');
+        const netBalanceEl = document.getElementById('netBalance');
+
+        if (totalOfferingsEl) totalOfferingsEl.textContent = `$${offerings.toFixed(2)}`;
+        if (totalExpensesEl) totalExpensesEl.textContent = `$${expenses.toFixed(2)}`;
+        if (netBalanceEl) {
+          netBalanceEl.textContent = `$${balance.toFixed(2)}`;
+          netBalanceEl.style.color = balance >= 0 ? '#16a34a' : '#dc2626';
+        }
+      }
+
+      function displayTransactions(filteredTransactions = null) {
+        const transactionList = document.getElementById('transactionList');
+        if (!transactionList) return;
+        
+        const toDisplay = filteredTransactions || transactions;
+        
+        if (toDisplay.length === 0) {
+          transactionList.innerHTML = '<p class="muted">No transactions found.</p>';
+          return;
+        }
+
+        transactionList.innerHTML = toDisplay.map(transaction => {
+          const isIncome = transaction.type === 'offering';
+          const amountClass = isIncome ? 'income' : 'expense';
+          const amountPrefix = isIncome ? '+' : '-';
+          
+          return `
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-description">
+                  <strong>${transaction.description || getCategoryDisplayName(transaction.category)}</strong>
+                </div>
+                <div class="transaction-meta">
+                  ${new Date(transaction.date).toLocaleDateString()} •
+                  ${getCategoryDisplayName(transaction.category)} •
+                  ${transaction.type === 'offering' ? 'Income' : 'Expense'}
+                  ${transaction.notes ? ` • ${transaction.notes}` : ''}
+                </div>
+              </div>
+              <div class="transaction-amount ${amountClass}">
+                ${amountPrefix}$${transaction.amount.toFixed(2)}
+              </div>
+              <button class="btn ghost small" onclick="deleteTransaction(${transaction.id})" style="color: #dc2626;">Delete</button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function getCategoryDisplayName(category) {
+        const categoryNames = {
+          'general-offering': 'General Offering',
+          'tithe': 'Tithe',
+          'special-offering': 'Special Offering',
+          'missions': 'Missions',
+          'food': 'Food & Refreshments',
+          'events': 'Events & Activities',
+          'birthday': 'Birthday Celebrations',
+          'supplies': 'Supplies & Materials',
+          'venue': 'Venue & Facilities',
+          'transportation': 'Transportation',
+          'gifts': 'Gifts & Appreciation',
+          'outreach': 'Outreach & Ministry',
+          'other': 'Other'
+        };
+        return categoryNames[category] || category;
+      }
+
+      function updateCategoryBreakdown() {
+        const categoryBreakdown = document.getElementById('categoryBreakdown');
+        if (!categoryBreakdown) return;
+        
+        const categoryTotals = {};
+
+        transactions.forEach(transaction => {
+          const category = transaction.category;
+          if (!categoryTotals[category]) {
+            categoryTotals[category] = { income: 0, expense: 0 };
+          }
+          
+          if (transaction.type === 'offering') {
+            categoryTotals[category].income += transaction.amount;
+          } else {
+            categoryTotals[category].expense += transaction.amount;
+          }
+        });
+
+        if (Object.keys(categoryTotals).length === 0) {
+          categoryBreakdown.innerHTML = '<p class="muted">Add transactions to see category breakdown.</p>';
+          return;
+        }
+
+        categoryBreakdown.innerHTML = Object.entries(categoryTotals)
+          .map(([category, totals]) => {
+            const net = totals.income - totals.expense;
+            const netClass = net >= 0 ? 'income' : 'expense';
+            
+            return `
+              <div class="category-item">
+                <div class="category-name">${getCategoryDisplayName(category)}</div>
+                <div class="category-amount ${netClass}">$${Math.abs(net).toFixed(2)}</div>
+                <div class="category-details muted small">
+                  Income: $${totals.income.toFixed(2)} |
+                  Expenses: $${totals.expense.toFixed(2)}
+                </div>
+              </div>
+            `;
+          }).join('');
+      }
+
+      // Global function for deleting transactions
+      window.deleteTransaction = function(id) {
+        if (confirm('Are you sure you want to delete this transaction?')) {
+          transactions = transactions.filter(t => t.id !== id);
+          saveFinancialData();
+          updateFinancialSummary();
+          displayTransactions();
+          updateCategoryBreakdown();
+        }
+      };
+
+      // Filter functionality
+      document.getElementById('applyFilters')?.addEventListener('click', function() {
+        const categoryFilter = document.getElementById('filter-category')?.value;
+        const monthFilter = document.getElementById('filter-month')?.value;
+        
+        let filtered = transactions;
+        
+        if (categoryFilter) {
+          if (categoryFilter === 'offering' || categoryFilter === 'expense') {
+            filtered = filtered.filter(t => t.type === categoryFilter);
+          } else {
+            filtered = filtered.filter(t => t.category === categoryFilter);
+          }
+        }
+        
+        if (monthFilter) {
+          filtered = filtered.filter(t => t.date.startsWith(monthFilter));
+        }
+        
+        displayTransactions(filtered);
+      });
+
+      // Export functionality
+      document.getElementById('exportFinancial')?.addEventListener('click', function() {
+        if (transactions.length === 0) {
+          alert('No transactions to export.');
+          return;
+        }
+        
+        const csvContent = [
+          ['Date', 'Type', 'Category', 'Description', 'Amount', 'Notes'].join(','),
+          ...transactions.map(t => [
+            t.date,
+            t.type,
+            getCategoryDisplayName(t.category),
+            `"${t.description}"`,
+            t.amount.toFixed(2),
+            `"${t.notes}"`
+          ].join(','))
+        ].join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `llf-financial-report-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // Clear data functionality
+      document.getElementById('clearData')?.addEventListener('click', function() {
+        if (confirm('⚠️ This will permanently delete ALL financial data. Are you absolutely sure?')) {
+          if (confirm('This action cannot be undone. Click OK to proceed with deletion.')) {
+            transactions = [];
+            saveFinancialData();
+            updateFinancialSummary();
+            displayTransactions();
+            updateCategoryBreakdown();
+            alert('All financial data has been cleared.');
+          }
         }
       });
     });
