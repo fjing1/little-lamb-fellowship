@@ -26,13 +26,34 @@
 
 // ============ Verse of the day (best-effort) ============
 (async () => {
-  const box = document.getElementById('verseBox'); if (!box) return;
+  const box = document.getElementById('verseBox');
+  if (!box) return;
+  
+  // Show loading state
+  box.textContent = 'Loading verse...';
+  box.setAttribute('aria-live', 'polite');
+  
   try {
-    const res = await fetch('https://raw.githubusercontent.com/public-apis-demos/bible-votd/main/today.json', {cache:'no-store'});
-    if (!res.ok) throw new Error('Unavailable');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
+    const res = await fetch('https://raw.githubusercontent.com/public-apis-demos/bible-votd/main/today.json', {
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    box.textContent = `${data.reference} — ${data.text}`;
+    
+    if (data.reference && data.text) {
+      box.textContent = `${data.reference} — ${data.text}`;
+    } else {
+      throw new Error('Invalid data format');
+    }
   } catch (e) {
+    console.log('Verse loading failed:', e.message);
     box.textContent = "You matter. You're welcome here.";
   }
 })();
@@ -43,41 +64,146 @@
   const pastList = document.getElementById('pastEventList');
   const nextBox = document.getElementById('nextEvent');
   const homeUpdates = document.getElementById('homeUpdates');
+  
+  // Show loading states
+  if (list) list.innerHTML = '<li class="muted loading">Loading events...</li>';
+  if (pastList) pastList.innerHTML = '<li class="muted loading">Loading past events...</li>';
+  if (homeUpdates) homeUpdates.innerHTML = '<li class="muted loading">Loading updates...</li>';
+  
   try {
-    const res = await fetch('data/events.json', {cache:'no-store'});
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    const res = await fetch('data/events.json', {
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const items = await res.json();
+    
+    if (!Array.isArray(items)) throw new Error('Invalid data format');
+    
     const now = new Date();
-    const upcoming = items.filter(e => new Date(e.date) >= now).sort((a,b)=> new Date(a.date)-new Date(b.date));
-    const past = items.filter(e => new Date(e.date) < now).sort((a,b)=> new Date(a.date)-new Date(b.date));
+    const upcoming = items
+      .filter(e => e.date && new Date(e.date) >= now)
+      .sort((a,b) => new Date(a.date) - new Date(b.date));
+    const past = items
+      .filter(e => e.date && new Date(e.date) < now)
+      .sort((a,b) => new Date(b.date) - new Date(a.date)); // Most recent first
 
-    // render next event on home
+    // Render next event on home with better error handling
     if (nextBox && upcoming[0]) {
       const n = upcoming[0];
-      const when = new Date(n.date).toLocaleString([], {weekday:'long', month:'long', day:'numeric', hour:'numeric', minute:'2-digit'});
-      nextBox.innerHTML = `<strong>Next up:</strong> ${n.title} — ${when} · ${n.location}${n.signup_url ? ` · <a class="btn small" href="${n.signup_url}">Sign up</a>`:''}`;
+      try {
+        const when = new Date(n.date).toLocaleString([], {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
+        const signupBtn = n.signup_url ?
+          ` · <a class="btn small" href="${escapeHtml(n.signup_url)}" target="_blank" rel="noopener">Sign up</a>` :
+          '';
+        nextBox.innerHTML = `<strong>Next up:</strong> ${escapeHtml(n.title)} — ${when} · ${escapeHtml(n.location || 'TBD')}${signupBtn}`;
+      } catch (dateError) {
+        nextBox.innerHTML = `<strong>Next up:</strong> ${escapeHtml(n.title)} — ${escapeHtml(n.location || 'TBD')}`;
+      }
     }
 
-    // render event pages
+    // Enhanced render function with better accessibility
     const render = (e) => {
-      const when = new Date(e.date).toLocaleString([], {weekday:'long', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
-      const meta = `${when} · ${e.location}`;
-      return `<li class="card"><h3>${e.title}</h3><p class="muted">${meta}</p><p>${e.excerpt||''}</p>${e.signup_url?`<a class="btn" href="${e.signup_url}">Sign up</a>`:''}</li>`;
+      try {
+        const when = new Date(e.date).toLocaleString([], {
+          weekday: 'long',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
+        const meta = `${when} · ${escapeHtml(e.location || 'TBD')}`;
+        const signupBtn = e.signup_url ?
+          `<a class="btn" href="${escapeHtml(e.signup_url)}" target="_blank" rel="noopener">Sign up</a>` :
+          '';
+        return `<li class="card">
+          <h3>${escapeHtml(e.title)}</h3>
+          <p class="muted">${meta}</p>
+          <p>${escapeHtml(e.excerpt || '')}</p>
+          ${signupBtn}
+        </li>`;
+      } catch (renderError) {
+        return `<li class="card">
+          <h3>${escapeHtml(e.title)}</h3>
+          <p class="muted">Date/time unavailable</p>
+          <p>${escapeHtml(e.excerpt || '')}</p>
+        </li>`;
+      }
     };
-    if (list) list.innerHTML = upcoming.map(render).join('') || '<li class="muted">No upcoming events</li>';
-    if (pastList) pastList.innerHTML = past.reverse().map(render).join('') || '';
 
-    // minimal "What's new" on home from events
-    if (homeUpdates) homeUpdates.innerHTML = upcoming.slice(0,4).map(e => `<li class="card"><strong>${e.title}</strong><br><span class="muted">${new Date(e.date).toLocaleDateString()}</span></li>`).join('');
+    // Update DOM with proper fallbacks
+    if (list) {
+      list.innerHTML = upcoming.length > 0 ?
+        upcoming.map(render).join('') :
+        '<li class="muted">No upcoming events scheduled.</li>';
+    }
+    
+    if (pastList) {
+      pastList.innerHTML = past.length > 0 ?
+        past.map(render).join('') :
+        '<li class="muted">No past events to display.</li>';
+    }
+
+    // Enhanced "What's new" section
+    if (homeUpdates) {
+      const updates = upcoming.slice(0, 4).map(e => {
+        try {
+          const dateStr = new Date(e.date).toLocaleDateString();
+          return `<li class="card">
+            <strong>${escapeHtml(e.title)}</strong><br>
+            <span class="muted">${dateStr}</span>
+          </li>`;
+        } catch {
+          return `<li class="card">
+            <strong>${escapeHtml(e.title)}</strong><br>
+            <span class="muted">Date TBD</span>
+          </li>`;
+        }
+      });
+      homeUpdates.innerHTML = updates.length > 0 ?
+        updates.join('') :
+        '<li class="muted">No recent updates.</li>';
+    }
+    
   } catch (e) {
-    if (list) list.innerHTML = '<li class="muted">Could not load events.</li>';
+    console.error('Events loading failed:', e.message);
+    const errorMsg = '<li class="muted">Could not load events. Please try again later.</li>';
+    if (list) list.innerHTML = errorMsg;
+    if (pastList) pastList.innerHTML = errorMsg;
+    if (homeUpdates) homeUpdates.innerHTML = errorMsg;
   }
 })();
 
+// ============ Utility Functions ============
+function escapeHtml(text) {
+  if (typeof text !== 'string') return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // ============ Songs (from data/songs.txt) ============
 (async () => {
-  const list = document.getElementById('songList'); if (!list) return;
+  const list = document.getElementById('songList');
+  if (!list) return;
+  
   const search = document.getElementById('songSearch');
   const btn = document.getElementById('downloadAll');
+  
+  // Show loading state
+  list.innerHTML = '<li class="muted loading">Loading songs...</li>';
 
   const parseLine = (line) => {
     // Format: Title - tags | URL
@@ -88,26 +214,86 @@
     return { title, tags, url };
   };
 
-  const text = await (await fetch('data/songs.txt', {cache:'no-store'})).text();
-  const items = text.split(/\\r?\\n/).map(parseLine).filter(Boolean);
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    const response = await fetch('data/songs.txt', {
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const text = await response.text();
+    const items = text.split(/\r?\n/).map(parseLine).filter(Boolean);
 
-  const render = (it) => `<li class="card"><a href="${it.url}" target="_blank" rel="noopener"><strong>${it.title}</strong></a>${it.tags.length?`<div class="muted small">#${it.tags.join(' #')}</div>`:''}</li>`;
-  const update = () => {
-    const q = (search.value || '').toLowerCase();
-    const filtered = items.filter(it => [it.title, ...it.tags].join(' ').toLowerCase().includes(q));
-    list.innerHTML = filtered.map(render).join('') || '<li class="muted">No matches</li>';
-  };
-  search?.addEventListener('input', update);
-  update();
+    const render = (it) => `<li class="card">
+      <a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">
+        <strong>${escapeHtml(it.title)}</strong>
+      </a>
+      ${it.tags.length ? `<div class="muted small">#${it.tags.map(escapeHtml).join(' #')}</div>` : ''}
+    </li>`;
+    
+    const update = () => {
+      try {
+        const q = (search?.value || '').toLowerCase();
+        const filtered = items.filter(it =>
+          [it.title, ...it.tags].join(' ').toLowerCase().includes(q)
+        );
+        list.innerHTML = filtered.length > 0 ?
+          filtered.map(render).join('') :
+          '<li class="muted">No songs match your search.</li>';
+      } catch (e) {
+        console.error('Search error:', e);
+        list.innerHTML = '<li class="muted">Search error occurred.</li>';
+      }
+    };
+    
+    // Initial render
+    update();
+    
+    // Add search functionality with debouncing
+    let searchTimeout;
+    search?.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(update, 300);
+    });
 
-  btn?.addEventListener('click', () => {
-    const blob = new Blob([text], {type:'text/plain'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'songs.txt';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
+    // Enhanced download functionality
+    btn?.addEventListener('click', () => {
+      try {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'llf-songs.txt';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        
+        // Show feedback
+        const originalText = btn.textContent;
+        btn.textContent = 'Downloaded!';
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2000);
+      } catch (e) {
+        console.error('Download error:', e);
+        alert('Download failed. Please try again.');
+      }
+    });
+    
+  } catch (e) {
+    console.error('Songs loading failed:', e.message);
+    list.innerHTML = '<li class="muted">Could not load songs. Please try again later.</li>';
+    
+    // Disable search and download if loading failed
+    if (search) search.disabled = true;
+    if (btn) btn.disabled = true;
+  }
 })();
 
 // ============ Prayer form status (optional progressive enhancement) ============

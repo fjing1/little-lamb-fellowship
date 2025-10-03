@@ -1,186 +1,164 @@
-/* ============================
-   theme.css (LLF — Light + Dark)
-   ============================ */
+/* Theme-specific overrides and additional styles */
 
-/* 1) Base (light mode) */
+/* Enhanced color scheme for better contrast */
 :root {
-  color-scheme: light;
-
-  /* LIGHT THEME COLORS */
-  --brand:       #2563eb;
-  --brand-ink:   #1e40af;
-  --bg:          #ffffff;
-  --surface:     #f8fafc;
-  --text:        #0f172a;
-  --muted:       #475569;
-  --border:      #e5e7eb;
-
-  --radius:      16px;
-  --shadow-sm:   0 1px 2px rgba(0,0,0,.06);
-  --shadow-md:   0 6px 20px rgba(0,0,0,.08);
-  --shadow-glow: 0 0 18px rgba(37,99,235,.25);
-
-  --focus-ring:  2px solid var(--brand);
+  --accent: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --gradient: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
 }
 
-/* 2) Dark mode with custom palette */
-html[data-theme="dark"] {
-  color-scheme: dark;
-
-  --bg:          #060107; /* ⚫ Dark Black */
-  --surface:     #210d3b; /* Deep Purple */
-
-  /* Text palette */
-  --text-main:   #ffffff;
-  --text-strong: #d081d7; /* 🌸 Neon Pink / Magenta */
-  --text-link:   #237ad7; /* 🔵 Electric Blue */
-  --text-accent: #78277d; /* 💜 Violet / Purple */
-  --text-muted:  #d86e72; /* 🔥 Orange-Pink Glow */
-  --border:      #237ad7;
-
-  --shadow-sm:   0 1px 2px rgba(0,0,0,.35);
-  --shadow-md:   0 10px 30px rgba(0,0,0,.45);
-  --shadow-glow: 0 0 18px rgba(208,129,215,.35);
+:root[data-theme="dark"] {
+  --accent: #60a5fa;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
 }
 
-/* Optional: respect OS preference if no data-theme is set */
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme]) { color-scheme: dark; }
-  html:not([data-theme]) body { background: #060107; color: #ffffff; }
+/* Enhanced hero section */
+.hero {
+  background: var(--gradient);
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-/* 3) Global */
-html, body {
-  background: var(--bg) !important;
-  color: var(--text-main, var(--text)) !important;
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
-a {
-  color: var(--text-link, var(--brand)) !important;
-  text-decoration: none;
-}
-a:hover {
-  color: var(--text-strong, var(--brand-ink)) !important;
-  text-shadow: 0 0 8px var(--text-link, transparent);
+.hero > * {
+  position: relative;
+  z-index: 2;
 }
 
-/* 4) Headings */
-h1, h2, h3, h4 {
-  color: var(--text-strong, var(--text)) !important;
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
 }
 
-/* 5) Surfaces */
-.site-header,
-header,
-nav,
-.site-footer,
-.card,
-section,
-.modal article {
-  background: var(--surface) !important;
-  color: var(--text-main, var(--text)) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+.hero p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin-bottom: 2rem;
 }
 
-.site-header { border-bottom-width: 1px !important; }
-.site-footer { border-top-width: 1px !important; }
-
-/* 6) Buttons */
+/* Enhanced buttons */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .65rem 1rem;
-  border-radius: calc(var(--radius) - 4px);
-  background: var(--text-strong, var(--brand)) !important;
-  color: #fff !important;
-  border: 1px solid transparent !important;
-  box-shadow: var(--shadow-glow);
-  transition: all .2s ease;
-  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.025em;
 }
-.btn:hover { background: var(--text-accent, var(--brand-ink)) !important; }
 
-.btn.ghost {
-  background: transparent !important;
-  color: var(--text-link, var(--brand)) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: none;
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 .btn.ghost:hover {
-  background: rgba(255,255,255,.06) !important;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* 7) Nav links */
-nav a {
-  display: inline-block;
-  padding: .5rem .75rem;
-  border-radius: 10px;
-  color: var(--text-muted, var(--muted)) !important;
-}
-nav a:hover,
-nav a[aria-current="page"] {
-  color: var(--text-link, var(--brand)) !important;
-  background: rgba(255,255,255,.06);
-}
-
-/* 8) Forms */
-label {
-  color: var(--text-accent, var(--text)) !important;
-}
-input, textarea, select {
-  width: 100%;
-  background: #ffffff;
-  color: #0f172a;
+/* Enhanced cards */
+.card {
+  transition: all 0.2s ease;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: .6rem .7rem;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: var(--text-link, var(--brand));
-  box-shadow: 0 0 0 3px rgba(37,99,235,.25);
-}
-html[data-theme="dark"] input,
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] select {
-  background: #0d0d12 !important;
-  color: var(--text-main) !important;
-  border-color: var(--border) !important;
-}
-html[data-theme="dark"] input:focus,
-html[data-theme="dark"] textarea:focus,
-html[data-theme="dark"] select:focus {
-  border-color: var(--text-strong) !important;
-  box-shadow: 0 0 12px rgba(208,129,215,.45) !important;
 }
 
-/* 9) Muted text / footer */
-.muted,
-small,
-footer {
-  color: var(--text-muted, var(--muted)) !important;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--brand);
 }
 
-/* 10) Utility classes */
-.notice {
-  border: 1px dashed var(--border) !important;
-  padding: .75rem 1rem;
-  border-radius: 12px;
-}
-.responsive { max-width: 100%; height: auto; }
-.small { font-size: .9rem; }
-.two-col { columns: 2; column-gap: 1.25rem; }
-@media (max-width: 720px) { .two-col { columns: 1; } }
-
-.small-group-img {
-  max-width: 420px; width: 100%; height: auto;
-  border-radius: 1rem; display: block; margin: 0 auto;
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-/* 11) Focus states */
-:where(a, button, input, textarea, select):focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--brand);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced form elements */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Status messages */
+.status-success {
+  color: var(--success);
+}
+
+.status-error {
+  color: var(--error);
+}
+
+.status-warning {
+  color: var(--warning);
+}
+
+/* Enhanced responsive design */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Print styles */
+@media print {
+  .site-header,
+  .header-actions,
+  .btn,
+  .modal {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
 }

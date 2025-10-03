@@ -6,9 +6,13 @@
   <title>Little Lamb Fellowship — Youth</title>
   <meta name="description" content="A welcoming Christian youth community — friends, service, and growth." />
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css?v=2">
   <link rel="icon" href="assets/images/favicon.png">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to main content</a>
   <header class="site-header">
     <div class="container">
       <a class="brand" href="index.html">LLF of ACC</a>
@@ -25,11 +29,12 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main">
     <section class="card">
       <h1>Song Library</h1>
       <div class="toolbar">
-        <input id="songSearch" type="search" placeholder="Search songs or tags…" aria-label="Search songs"/>
+        <label for="songSearch" class="sr-only">Search songs</label>
+        <input id="songSearch" type="search" placeholder="Search songs or tags…" aria-label="Search songs and tags"/>
         <button id="downloadAll" class="btn">Download list</button>
       </div>
       <ul id="songList" class="list"></ul>
