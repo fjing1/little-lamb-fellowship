@@ -230,12 +230,18 @@ function escapeHtml(text) {
     const text = await response.text();
     const items = text.split(/\r?\n/).map(parseLine).filter(Boolean);
 
-    const render = (it) => `<li class="card">
-      <a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">
-        <strong>${escapeHtml(it.title)}</strong>
-      </a>
-      ${it.tags.length ? `<div class="muted small">#${it.tags.map(escapeHtml).join(' #')}</div>` : ''}
-    </li>`;
+    const render = (it) => {
+      const isYouTube = it.url.includes('youtube.com') || it.url.includes('youtu.be');
+      const icon = isYouTube ? '<span class="youtube-icon">▶</span>' : '';
+      
+      return `<li class="card">
+        <a href="${escapeHtml(it.url)}" target="_blank" rel="noopener" class="song-link">
+          ${icon}
+          <strong>${escapeHtml(it.title)}</strong>
+        </a>
+        ${it.tags.length ? `<div class="song-tags">${it.tags.map(tag => `<span class="song-tag">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+      </li>`;
+    };
     
     const update = () => {
       try {

@@ -1,0 +1,43 @@
+name: Handle Prayer Requests
+
+on:
+  repository_dispatch:
+    types: [prayer-request]
+
+jobs:
+  create-prayer-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Prayer Request Issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { name, request, email } = context.payload.client_payload;
+            
+            const title = `Prayer Request${name ? ` from ${name}` : ''}`;
+            const timestamp = new Date().toLocaleString();
+            
+            let body = `## Prayer Request\n\n`;
+            
+            if (name) {
+              body += `**From:** ${name}\n`;
+            }
+            
+            if (email) {
+              body += `**Contact:** ${email}\n`;
+            }
+            
+            body += `**Submitted:** ${timestamp}\n\n`;
+            body += `**Request:**\n${request}\n\n`;
+            body += `---\n*This prayer request was automatically submitted through the LLF website.*`;
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['prayer-request', 'needs-prayer']
+            });
+            
+            console.log(`Created prayer request issue #${issue.data.number}`);
