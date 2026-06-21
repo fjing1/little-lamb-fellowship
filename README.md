@@ -47,18 +47,22 @@ A modern, accessible static website for the Little Lamb Fellowship young profess
 ├── index.html              # Homepage
 ├── events.html             # Events and announcements
 ├── songs.html              # Song library with search
-├── contact.html            # Prayer request form
+├── contact.html            # Prayer request center
 ├── photos.html             # Photo gallery
+├── financial.html          # Financial tracking system
 ├── assets/
 │   ├── css/
 │   │   ├── style.css       # Main styles
 │   │   └── theme.css       # Theme enhancements
 │   ├── js/
-│   │   └── script.js       # Main JavaScript
+│   │   ├── script.js       # Main JavaScript
+│   │   └── prayer-encryption.js  # Prayer encryption system
 │   └── images/             # Images and assets
 ├── data/
 │   ├── events.json         # Event data
-│   └── songs.txt           # Song library data
+│   └── songs.txt           # Song library data (35 songs)
+├── netlify/functions/      # Serverless functions
+├── .github/workflows/      # GitHub Actions
 └── resource/               # Additional resources
 ```
 
@@ -116,6 +120,18 @@ Update Formspree endpoints in:
 
 Replace `https://formspree.io/f/mandojop` with your endpoint.
 
+### Financial System Setup
+The financial tracking system requires:
+1. Admin credentials (configured in `financial.html`)
+2. Local storage for transaction data
+3. Secure access for authorized users only
+
+### Prayer Encryption Setup
+For secure prayer requests, see `PRAYER-ENCRYPTION-SETUP.md` for detailed configuration instructions including:
+- GitHub repository setup
+- Environment variables
+- Encryption key management
+
 ## 🎯 Features
 
 ### Navigation
@@ -141,6 +157,22 @@ Replace `https://formspree.io/f/mandojop` with your endpoint.
 - Tag-based filtering
 - Bulk download capability
 - Responsive card layout
+- 35 songs including 20 Chinese worship songs
+
+### Prayer Center
+- Secure encrypted prayer request submission
+- Admin dashboard for prayer management
+- Military-grade AES-256-GCM encryption
+- GitHub integration for secure storage
+- Automatic email notifications
+
+### Financial Tracking
+- Secure login system for authorized users
+- Transaction management (offerings & expenses)
+- Category-based organization
+- Financial reporting and summaries
+- CSV export functionality
+- Real-time balance calculations
 
 ### Forms
 - Spam protection with honeypots

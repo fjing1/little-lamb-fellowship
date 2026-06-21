@@ -22,7 +22,7 @@ The Little Lamb Fellowship website now includes a secure, encrypted prayer reque
 
 ### Step 1: Generate Admin Keys
 
-1. **Access Admin Dashboard**: Go to `https://your-site.com/admin-prayers.html`
+1. **Access Admin Dashboard**: Go to `https://your-site.com/contact.html` and open the **Admin Dashboard** tab
 2. **Generate Key**: Click "Generate New Key" button
 3. **Save Securely**: Copy and save the generated key in a secure password manager
 4. **Share with Leaders**: Securely share the key only with authorized prayer team leaders
@@ -77,7 +77,7 @@ Choose one of these storage methods:
 
 ### Accessing the Dashboard
 
-1. **Navigate**: Go to `https://your-site.com/admin-prayers.html`
+1. **Navigate**: Go to `https://your-site.com/contact.html` and open the **Admin Dashboard** tab
 2. **Enter Key**: Paste your admin decryption key
 3. **Test Key**: Click "Test Key" to verify it works
 4. **Load Prayers**: Click "Load Prayer Requests" to view encrypted submissions
